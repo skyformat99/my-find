@@ -4,6 +4,8 @@ import subprocess
 OK = '\033[92m'
 WARNING = '\033[93m'
 FAIL = '\033[91m'
+BOLD = '\033[1m'
+UNDERLINE = '\033[4m'
 END = '\033[0m'
 
 def generate_architecture():
@@ -19,12 +21,15 @@ def generate_architecture():
 
 def call_program(tests):
 
-    print("Running %d tests" % len(tests))
+    print("Running %d tests .." % len(tests))
     success = 0
     for test in tests:
         success += make_test(test)
-    print(OK if success is len(tests) else WARNING if success is not 0 else FAIL, end='')
-    print("Succes %d/%d" % (success, len(tests)) + END)
+    print('[' + OK + 'OK' if success is len(tests) 
+            else WARNING + 'WARNING' if success is not 0 
+            else FAIL + 'FAIL', end='')
+    print(END + ']', end = ' ')
+    print("Succes %d/%d" % (success, len(tests)))
 
 def make_test(arg):
 
@@ -40,8 +45,8 @@ def make_test(arg):
 
 def run_test():
 
-    thr_one = ["", "../", "lundi", "samedi", "lundi samedi"]
-    print("*-THRESHOLD 1-*")
+    thr_one = [".", "", "./", "../", "lundi", "samedi", "lundi samedi"]
+    print(BOLD + "[*] THRESHOLD 1" + END)
     call_program(thr_one)
 
 os.chdir("tests")

@@ -90,14 +90,14 @@ int search_in_dir(char *path, char option)
     {
       if (!(option & OPT_D))
         printf("%s/%s\n", path, dp->d_name);
-      if (dp->d_type & DT_DIR)
+      if (dp->d_type & DT_DIR || dp->d_type & DT_LNK)
       {
         /* size of the two names + the nul character and the / */
         subdir = calloc(my_strlen(path) + my_strlen(dp->d_name) + 2, 1);
         my_strcat(subdir, path);
         my_strcat(subdir, "/");
         my_strcat(subdir, dp->d_name);
-        if ((!(dp->d_type & DT_LNK)) || option & OPT_L)
+        if (!(dp->d_type & DT_LNK) || option & OPT_L)
             search_in_dir(subdir, option);
         free(subdir);
       }
