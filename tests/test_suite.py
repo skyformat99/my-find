@@ -21,15 +21,14 @@ def generate_architecture():
 
 def call_program(tests):
 
-    print("Running %d tests .." % len(tests))
     success = 0
     for test in tests:
         success += make_test(test)
-    print('[' + OK + 'OK' if success is len(tests) 
+    print('[', OK + 'OK' if success is len(tests) 
             else WARNING + 'WARNING' if success is not 0 
             else FAIL + 'FAIL', end='')
-    print(END + ']', end = ' ')
-    print("Succes %d/%d" % (success, len(tests)))
+    print(END + ' ]', end = ' ')
+    print("Succes %d/%d" % (success, len(tests)), end = '')
 
 def make_test(arg):
 
@@ -46,8 +45,11 @@ def make_test(arg):
 def run_test():
 
     thr_one = [".", "", "./", "../", "lundi", "samedi", "lundi samedi"]
-    print(BOLD + "[*] THRESHOLD 1" + END)
     call_program(thr_one)
+    print(BOLD + " -  THRESHOLD 1" + END)
+    thr_two = ["-d", "-H", "-L", "-P", "-d ../", "-L samedi", "-H samedi", "-P samedi"]
+    call_program(thr_two)
+    print(BOLD + " -  THRESHOLD 2" + END)
 
 os.chdir("tests")
 generate_architecture()
