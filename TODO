@@ -4,9 +4,10 @@
 [x] verify -d option really works
 [x] take care of -L simlink
 [x] create simlink in test suite
-[] take care of -H
+[x] take care of -H
 [] Valgrind to see if problem with lstat
-[] test on PIE if test suite also creates link in link
-[] find out if arg can be given as -Ld of -L -d
+[x] test on PIE if test suite also creates link in link
+[x] find out if arg can be given as -Ld of -L -d
 [] options overide each other
-[] find out if expressions can be given as only arg of find
+[x] find out if expressions can be given as only arg of find
+[] yes they can, implement it now
