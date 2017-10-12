@@ -14,3 +14,4 @@ test:	myfind
 clean:
 	rm myfind
 	rm -r tests/architecture
+	rm -r tests/link

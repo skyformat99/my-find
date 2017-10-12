@@ -3,7 +3,6 @@
 #include "parse_arg.h"
 #include "utilities.h"
 
-//pour expressions rajouter if (find != NULL and **argv == '-')
 /**
 ** \fn void parse_arg(int argc, char *argv[], struct argument *arg)
 ** \brief Parse the different arguments and store them inside argument.
@@ -16,33 +15,41 @@ void parse_arg(int argc, char *argv[], struct argument *arg)
 {
   int optlen = 0;
   int filelen = 0;
-//  int exprelen = 0;
+  int exprelen = 0;
 
   char **options = NULL;
   char **files = NULL;
-  //char *expressions = NULL;
+  char **expressions = NULL;
+  
   for (int i = 0; i < argc - 1; ++i, ++argv)
   {
-    if (**argv == '-' && i == 0)
+    if (**argv == '-' && !files)
     {
-      options = argv;
+      if (!options)
+        options = argv;
       optlen++;
     }
 
-    else if (**argv == '-')
-      optlen++;
-
-    if (**argv != '-')
+    if (**argv != '-' && !expressions)
     {
-      filelen++;
       if (!files)
         files = argv;
+      filelen++;
+    }
+
+    if (files && **argv == '-')
+    {
+      if (!expressions)
+        expressions = argv;
+      exprelen++;
     }
   }
   arg->options->string_array = options;
   arg->options->len = optlen;
   arg->files->string_array = files;
   arg->files->len = filelen;
+  arg->expressions->string_array = files;
+  arg->expressions->len = filelen;
 }
 
 /**

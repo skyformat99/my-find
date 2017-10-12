@@ -1,0 +1,12 @@
+[x] make a better make file
+[x] start documenting with doxygen
+[x] parse command
+[x] verify -d option really works
+[x] take care of -L simlink
+[x] create simlink in test suite
+[] take care of -H
+[] Valgrind to see if problem with lstat
+[] test on PIE if test suite also creates link in link
+[] find out if arg can be given as -Ld of -L -d
+[] options overide each other
+[] find out if expressions can be given as only arg of find

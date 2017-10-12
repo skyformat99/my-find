@@ -12,6 +12,9 @@ def generate_architecture():
 
     os.system("mkdir -p architecture/lundi/mercredi/jeudi")
     os.system("mkdir -p architecture/samedi/vendredi")
+    os.system("mkdir link")
+    os.system("touch link/InsideSymlink; ln -s -T " + os.getcwd() 
+               + "/link" + " architecture/symlink")
     extensions = ["txt", "mp3", "py"]
     for i in range(3):
         for ext in extensions:
@@ -24,8 +27,8 @@ def call_program(tests):
     success = 0
     for test in tests:
         success += make_test(test)
-    print('[', OK + 'OK' if success is len(tests) 
-            else WARNING + 'WARNING' if success is not 0 
+    print('[', OK + 'OK' if success is len(tests)
+            else WARNING + 'WARNING' if success is not 0
             else FAIL + 'FAIL', end='')
     print(END + ' ]', end = ' ')
     print("Succes %d/%d" % (success, len(tests)), end = '')
@@ -47,7 +50,7 @@ def run_test():
     thr_one = [".", "", "./", "../", "lundi", "samedi", "lundi samedi"]
     call_program(thr_one)
     print(BOLD + " -  THRESHOLD 1" + END)
-    thr_two = ["-d", "-H", "-L", "-P", "-d ../", "-L samedi", "-H samedi", "-P samedi"]
+    thr_two = ["-d", "-H", "-L", "-P", "-d ../", "-L samedi", "-H symlink", "symlink"]
     call_program(thr_two)
     print(BOLD + " -  THRESHOLD 2" + END)
 
