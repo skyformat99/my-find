@@ -8,25 +8,25 @@
 /*int main(void)
 {
     char *input[] = {
-      "!", "-name", "test", "-o", "-type", "f", "-a", "-type", "d", NULL
+      "!", "(", "-name", "test", "-o", "-type", "f", ")", "-a", "-type", "d", NULL
     };
-    char **postfix = malloc(sizeof(char *) * 10);
+    char **postfix = malloc(sizeof(char *) * 12);
     to_postfix(input, postfix);
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 9; i++)
       printf("%s ", postfix[i]);
     free(postfix);
     return 0;
-}
-*/
+}*/
+
 void to_postfix(char **input, char **postfix)
 {
     char *s;
     struct stack *stack = init();
     size_t j = 0;
-    for (size_t i = 0; input[i] != NULL; i++)
+    for (size_t i = 0; input[i] != NULL; ++i)
     {
-        printf("%zu", i);
-        if (!is_operator(input[i]))
+        if (!is_operator(input[i]) && !my_strcmp(input[i], "(")
+            && !my_strcmp(input[i], ")"))
         {
             postfix[j] = input[i];
             j++;
@@ -36,11 +36,10 @@ void to_postfix(char **input, char **postfix)
             stack = push(stack, input[i]);
         if (my_strcmp(input[i], ")"))
         {
-            while (stack->data && !my_strcmp(stack->data, "("))
+            for (; stack->data && !my_strcmp(stack->data, "("); ++j)
             {
                 stack = pop(stack, &s);
                 postfix[j] = s;
-                j++;
             }
             stack = pop(stack, &s);
         }
@@ -50,22 +49,20 @@ void to_postfix(char **input, char **postfix)
                 stack = push(stack, input[i]);
             else
             {
-                while (stack->data && my_strcmp(stack->data, "(")
-                       && !is_priority(input[i], stack->data))
+                for (; stack->data && !my_strcmp(stack->data, "(")
+                       && !is_priority(input[i], stack->data); ++j)
                 {
                        stack = pop(stack, &s);
                        postfix[j] = s;
-                       j++;
                 }
                 stack = push(stack, input[i]);
            }
         }
     }
-    while (stack->data)
+    for (; stack->data; ++j)
     {
         stack = pop(stack, &s);
         postfix[j] = s;
-        j++;
     }
 
     free_stack(stack);
