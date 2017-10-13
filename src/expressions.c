@@ -18,7 +18,7 @@ void split_string(char *expressions, char ***parsed)
   /* we split the different expressions in a list */
   char *start = expressions;
   char *end = expressions;
-  
+
   int i = 0;
   size_t size = 0;
   size_t len = 1;
@@ -37,16 +37,16 @@ void split_string(char *expressions, char ***parsed)
       end++;
     }
 
-    char *cmd = malloc(size);
-
+    char *cmd = malloc(size+1);
     memcpy(cmd, start, size);
+    cmd[size] = '\0';
     new[i] = cmd;
     i++;
     start = (end + 1);
     end++;
     size = 0;
   }
-  
+
   new[len] = NULL;
   *parsed = new;
 }

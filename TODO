@@ -13,4 +13,4 @@
 [] yes they can, implement it now
 [] remember to free the parsed list of expre
 [] check if first expr is valid
-[] RECODE MEMCPY
+[] RECODE MEMCPY AND STRCPY

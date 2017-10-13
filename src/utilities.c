@@ -26,8 +26,7 @@ char *my_strcat(char *s1, const char *s2)
 {
   int i = my_strlen(s1);
   for (int j = 0; s2[j] != '\0'; ++i, ++j)
-  {
     s1[i] = s2[j];
-  }
+
   return s1;
 }
