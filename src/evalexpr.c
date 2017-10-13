@@ -5,18 +5,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/*int main(void)
+int main(void)
 {
     char *input[] = {
-      "!", "(", "-name", "test", "-o", "-type", "f", ")", "-a", "-type", "d", NULL
+      "!", "1", "-o", "1", "-a", "0", NULL
     };
-    char **postfix = malloc(sizeof(char *) * 12);
+    char **postfix = malloc(sizeof(char *) * 7);
     to_postfix(input, postfix);
-    for (int i = 0; i < 9; i++)
+    for (int i = 0; i < 7; i++)
       printf("%s ", postfix[i]);
     free(postfix);
     return 0;
-}*/
+}
 
 void to_postfix(char **input, char **postfix)
 {
