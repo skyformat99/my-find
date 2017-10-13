@@ -3,35 +3,50 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "parse_arg.h"
+#include "expressions.h"
 #include "utilities.h"
 
-int test_arg(const char *file, char **expressions);
+ /**
+ ** \fn void split_string(char *expressions, char **parsed);
+ ** \brief Take a string and split it in a list of string separated by space
+ ** \param char ***arg pointer on the string of string
+ ** \return void.
+ */
 
-int main(void)
+void split_string(char *expressions, char ***parsed)
 {
-  test_arg("ntm", "-name test";);
-}
-
-int test_arg(const char *file, char *expressions)
-{
-  (void)file;
   /* we split the different expressions in a list */
-  char *end = expressions;
   char *start = expressions;
-  for (; *start != '\0'; start++)
+  char *end = expressions;
+  
+  int i = 0;
+  size_t size = 0;
+  size_t len = 1;
+
+  for (int i = 0; expressions[i] != '\0'; i++)
+    if (expressions[i] == ' ')
+      len++;
+
+  char **new = malloc(sizeof(char *) * len + 1);
+
+  while (*start != '\0')
   {
-    while (*end != ' ' || *end = '\0')
+    while (*end != ' ' && *end != '\0')
+    {
+      size++;
       end++;
+    }
 
+    char *cmd = malloc(size);
+
+    memcpy(cmd, start, size);
+    new[i] = cmd;
+    i++;
+    start = (end + 1);
+    end++;
+    size = 0;
   }
-
-  char** parsed = malloc(sizeof(char *) * size);
-  int j = 0;
-  for (int i = 0; i < size; ++i, j = my_strlen(&expression[i]) + 1)
-    parsed[i] = expression + j;
-
-  for (int i = 0; i < size; ++i)
-    printf("%s", parsed[i]);
-  return 0;
+  
+  new[len] = NULL;
+  *parsed = new;
 }
