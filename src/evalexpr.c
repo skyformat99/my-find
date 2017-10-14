@@ -8,15 +8,15 @@
 /*int main(void)
 {
     char *input[] = {
-      "(", "1", "-o", "0", ")", "-a", "0", NULL
+      "1", "-o", "0", "-a", "0", NULL
     };
     char **postfix = malloc(sizeof(char *) * 6);
     to_postfix(input, postfix);
     printf("eval : %c\n", eval(postfix));
     free(postfix);
     return 0;
-}
-*/
+}*/
+
 void to_postfix(char **input, char **postfix)
 {
     char *s;
@@ -122,11 +122,20 @@ int eval(char **postfix)
           stack = push(stack, postfix[i]);
       if (is_operator(postfix[i]))
       {
-        stack = pop(stack, &s);
-        int a = s[0] - '0';
-        stack = pop(stack, &s);
-        int b = s[0] - '0';
-        result = compute(postfix[i], a, b);
+        if (my_strcmp(postfix[i], "!"))
+        {
+          stack = pop(stack, &s);
+          int a = s[0] - '0';
+          result = compute(postfix[i], a, 0);
+        }
+        else
+        {
+          stack = pop(stack, &s);
+          int a = s[0] - '0';
+          stack = pop(stack, &s);
+          int b = s[0] - '0';
+          result = compute(postfix[i], a, b);
+        }
         stack = push(stack, my_itoa(result));
       }
     }
