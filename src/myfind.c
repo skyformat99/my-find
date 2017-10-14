@@ -29,18 +29,16 @@ int main(int argc, char *argv[])
   }
   parse_arg(argc, &argv[1], arg);
   //char option = get_options(arg);
-  if (arg->expressions->string_array)
+  char **postfix = malloc(sizeof(char *) * arg->expressions->len);
+  if (!postfix)
   {
-    char **postfix = malloc(sizeof(char *) * arg->expressions->len);
-    if (!postfix)
-    {
-      printf("mydinf: %s\n", strerror(errno));
-      return 1;
-    }
-    append_and(arg);
-    for (int i = 0; i < arg->expressions->len; ++i)
-      printf("%s ", arg->expressions->string_array[i]);
+    printf("mydinf: %s\n", strerror(errno));
+    return 1;
   }
+  append_and(arg);
+  for (int i = 0; i < arg->expressions->len; i++)
+    printf("%s ", arg->expressions->string_array[i]);
+  //to_postfix(arg->expressions->string_array, postfix);
   //r_val = search(arg, option);
   free_arg(arg);
   return r_val != 0;

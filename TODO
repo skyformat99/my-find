@@ -17,6 +17,7 @@
 [] RECODE MEMCPY AND STRCPY
 [] replace FNM_PATHNAME by FNM_FILE_NAME
 [x] in eval, pop twice, than call func
-[] to_postfix reduce -25 lines same for eval and parse_arg
+[] MORE THEN 25L: to_postfix,eval,parse_arg,append_and
 [] free everything when errx
 [] remove -g in makefile!
+[] append -a after -print when not at the end

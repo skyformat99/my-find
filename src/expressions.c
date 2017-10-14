@@ -20,7 +20,7 @@
 
 void append_and(struct argument *arg)
 {
-  size_t size = 1;
+  size_t size = 0;
   int print = 0;
   char **expressions = arg->expressions->string_array;
   for (int i = 0; i < arg->expressions->len; ++i, size++)
@@ -38,7 +38,7 @@ void append_and(struct argument *arg)
     }
   }
 
-  char **new = malloc(sizeof(char *) * size + 1);
+  char **new = malloc(sizeof(char *) * size + 2);
 
   int y = 0;
   for (int i = 0; i < arg->expressions->len; ++i, ++y)
@@ -58,12 +58,17 @@ void append_and(struct argument *arg)
   }
   if (!print)
   {
-    new[y] = "-a";
-    new[size] = "-print";
+    if (arg->expressions->len != 0)
+    {
+      new[y] = "-a";
+      new[y + 1] = "-print";
+    }
+    else
+      new[size] = "-print";
   }
 
   arg->expressions->string_array = new;
-  arg->expressions->len = size + 1;
+  arg->expressions->len = size + (size == 0 ? 1 : 2);
 }
 
 int call_function(char *func, char *arg, char *path)
