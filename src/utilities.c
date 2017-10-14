@@ -14,14 +14,25 @@ int my_strcmp(const char *s1, const char *s2)
   return s2[i] == '\0';
 }
 
+/**
+** \fn int my_strlen(const char *s1)
+** \brief computes the length of a string
+** \return the length of the string.
+*/
 int my_strlen(const char *s1)
 {
   int i = 0;
-  while (s1[i] != '\0')
-    i++;
+  if (s1)
+    while (s1[i] != '\0')
+      i++;
   return i;
 }
 
+/**
+** \fn char *my_strcat(char *s1, const char *s2)
+** \brief concatenates string
+** \return the new string, result of the concatenation of s1 and s2.
+*/
 char *my_strcat(char *s1, const char *s2)
 {
   int i = my_strlen(s1);

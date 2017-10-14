@@ -1,6 +1,10 @@
 #ifndef STACK_H
 #define STACK_H
 
+/**
+ ** \struct stack
+ ** \brief A minimalist implementation of a stack of string structure
+ */
 struct stack
 {
     char *data;

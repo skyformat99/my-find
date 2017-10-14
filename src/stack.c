@@ -3,6 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+** \fn struct stack *init(void)
+** \brief init a new stack
+** \return the new stack
+*/
 struct stack *init(void)
 {
     struct stack *new = malloc(sizeof(struct stack));
@@ -13,6 +18,11 @@ struct stack *init(void)
     return new;
 }
 
+/**
+** \fn struct stack *push(struct stack *head, char *data)
+** \brief push a string into the stack
+** \return the new stack
+*/
 struct stack *push(struct stack *head, char *data)
 {
     struct stack *new = malloc(sizeof(struct stack));
@@ -25,6 +35,11 @@ struct stack *push(struct stack *head, char *data)
     return new;
 }
 
+/**
+** \fn struct stack *pop(struct stack *head, char **data)
+** \brief pops the head of the stack
+** \return the new stack
+*/
 struct stack *pop(struct stack *head, char **data)
 {
     *data = malloc(my_strlen(head->data) + 1);
@@ -35,6 +50,11 @@ struct stack *pop(struct stack *head, char **data)
     return new;
 }
 
+/**
+** \fn void free_stack(struct stack *stack)
+** \brief free the stack
+** \return void
+*/
 void free_stack(struct stack *stack)
 {
   char *data;

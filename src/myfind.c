@@ -1,11 +1,11 @@
 /**
  * \file myfind.c
- * \brief Tentavie d'implementation de find(1).
+ * \brief light implementation of find(1).
  * \author noel_m
  * \version 0.1
  * \date 10 Octobre 2017
  *
- * Programme permettant de trouver des fichiers dans une architecture.
+ * Programme to find a file in a given architecture.
  *
  */
 

@@ -20,30 +20,35 @@ void parse_arg(int argc, char *argv[], struct argument *arg)
   char **options = NULL;
   char **files = NULL;
   char **expressions = NULL;
-  
+
   for (int i = 0; i < argc - 1; ++i, ++argv)
   {
-    if (**argv == '-' && !files)
+    if (**argv == '-' && *(*argv + 1) != 'd' && *(*argv + 1) != 'H'
+        && *(*argv + 1) != 'L' && *(*argv + 1) != 'P')
     {
-      if (!options)
+        if (!expressions)
+          expressions = argv;
+        exprelen++;
+    }
+
+    else if (**argv == '-')
+    {
+      if (!expressions && !options)
         options = argv;
       optlen++;
     }
 
-    if (**argv != '-' && !expressions)
+    if (**argv != '-')
     {
-      if (!files)
+      if (!files && !expressions)
         files = argv;
-      filelen++;
-    }
-
-    if (files && **argv == '-')
-    {
       if (!expressions)
-        expressions = argv;
-      exprelen++;
+        filelen++;
+      if (expressions)
+        exprelen++;
     }
   }
+
   arg->options->string_array = options;
   arg->options->len = optlen;
   arg->files->string_array = files;
@@ -62,6 +67,8 @@ void parse_arg(int argc, char *argv[], struct argument *arg)
 char get_options(struct argument *arg)
 {
   char option = '\0';
+  if (!arg->options->string_array)
+    return option;
   char **options = arg->options->string_array;
   int len = arg->options->len;
   for (int i = 0; i < len; ++i)

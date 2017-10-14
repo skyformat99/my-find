@@ -1,6 +1,7 @@
 #include "stack.h"
 #include "evalexpr.h"
 #include "utilities.h"
+#include "expressions.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,15 +9,24 @@
 /*int main(void)
 {
     char *input[] = {
-      "1", "-o", "0", "-a", "0", NULL
+      "1", NULL
     };
-    char **postfix = malloc(sizeof(char *) * 6);
+    char **postfix = malloc(sizeof(char *) * 2);
     to_postfix(input, postfix);
-    printf("eval : %c\n", eval(postfix));
+    for (int i = 0; postfix[i] != NULL; i++)
+      printf("%s ", postfix[i]);
+    printf("eval : %d\n", eval(postfix) - '0');
     free(postfix);
     return 0;
 }*/
 
+/**
+** \fn void to_postfix(char **input, char **postfix)
+** \brief Converts list of string in infix representation to postfix.
+**
+** \param char **input list of string in infix, char **postfix output.
+** \return None.
+*/
 void to_postfix(char **input, char **postfix)
 {
     char *s;
@@ -68,6 +78,13 @@ void to_postfix(char **input, char **postfix)
     free_stack(stack);
 }
 
+/**
+** \fn int is_operator(char *s)
+** \brief returns true if s if a recognize operator
+**
+** \param char *s the string on wich to make test.
+** \return 1 if is operator, 0 otherwise.
+*/
 int is_operator(char *s)
 {
     char *operator[] =
@@ -81,6 +98,12 @@ int is_operator(char *s)
     return 0;
 }
 
+/**
+** \fn int is_priority(char *data, char *input)
+** \brief returns true if input operator has priority on data
+** \param char *s the string on wich to make test.
+** \return 1 if is operator, 0 otherwise.
+*/
 int is_priority(char *data, char *input)
 {
     if (my_strcmp(data, input))
@@ -92,6 +115,12 @@ int is_priority(char *data, char *input)
     return 0;
 }
 
+/**
+** \fn int compute(char *op, int a, int b)
+** \brief returns the result of a op b or op a if unary operator
+** \param char *op the operator, int a the first member and b the second
+** \return the result of a op b
+*/
 int compute(char *op, int a, int b)
 {
   if (my_strcmp(op, "-o"))
@@ -111,7 +140,14 @@ char *my_itoa(int a)
   return "1";
 }
 
-int eval(char **postfix)
+/**
+** \fn int eval(char **postfix)
+** \brief Computes the result of the operation given in postfix notation
+** \param char **postfix, the list of string representing the operation in
+**  postfix
+** \return 1 if postfix is evaluated to true, 0 otherwise
+*/
+int eval(char *path, char **postfix)
 {
     struct stack *stack = init();
     char *s;
@@ -122,24 +158,26 @@ int eval(char **postfix)
           stack = push(stack, postfix[i]);
       if (is_operator(postfix[i]))
       {
-        if (my_strcmp(postfix[i], "!"))
-        {
+          int b = 0;
           stack = pop(stack, &s);
-          int a = s[0] - '0';
-          result = compute(postfix[i], a, 0);
-        }
-        else
-        {
+          char *func = s;
           stack = pop(stack, &s);
-          int a = s[0] - '0';
-          stack = pop(stack, &s);
-          int b = s[0] - '0';
+          char *arg = s;
+          int a = call_function(func, arg, path);
+          if (!my_strcmp(postfix[i], "!"))
+          {
+            stack = pop(stack, &s);
+            func = s;
+            stack = pop(stack, &s);
+            arg = s;
+            b = call_function(func, arg, path);
+          }
           result = compute(postfix[i], a, b);
-        }
-        stack = push(stack, my_itoa(result));
       }
+        stack = push(stack, my_itoa(result));
     }
+
     pop(stack, &s);
     //free(stack);
-    return s[0];
+    return s[0] - '0';
 }

@@ -5,12 +5,17 @@
 [x] take care of -L simlink
 [x] create simlink in test suite
 [x] take care of -H
-[] Valgrind to see if problem with lstat
+[x] Valgrind to see if problem with lstat
 [x] test on PIE if test suite also creates link in link
 [x] find out if arg can be given as -Ld of -L -d
 [] options overide each other
+[] check memory leaks
 [x] find out if expressions can be given as only arg of find
 [] yes they can, implement it now
 [] remember to free the parsed list of expre
 [] check if first expr is valid
 [] RECODE MEMCPY AND STRCPY
+[] replace FNM_PATHNAME by FNM_FILE_NAME
+[x] in eval, pop twice, than call func
+[] to_postfix reduce -25 lines same for eval and parse_arg
+[] free everything when errx
