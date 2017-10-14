@@ -15,6 +15,7 @@
 #include <string.h>
 #include "myfind.h"
 #include "parse_arg.h"
+#include "expressions.h"
 #include "search.h"
 
 int main(int argc, char *argv[])
@@ -27,8 +28,20 @@ int main(int argc, char *argv[])
     return 1;
   }
   parse_arg(argc, &argv[1], arg);
-  char option = get_options(arg);
-  r_val = search(arg, option);
+  //char option = get_options(arg);
+  if (arg->expressions->string_array)
+  {
+    char **postfix = malloc(sizeof(char *) * arg->expressions->len);
+    if (!postfix)
+    {
+      printf("mydinf: %s\n", strerror(errno));
+      return 1;
+    }
+    append_and(arg);
+    for (int i = 0; i < arg->expressions->len; ++i)
+      printf("%s ", arg->expressions->string_array[i]);
+  }
+  //r_val = search(arg, option);
   free_arg(arg);
   return r_val != 0;
 }

@@ -53,8 +53,8 @@ void parse_arg(int argc, char *argv[], struct argument *arg)
   arg->options->len = optlen;
   arg->files->string_array = files;
   arg->files->len = filelen;
-  arg->expressions->string_array = files;
-  arg->expressions->len = filelen;
+  arg->expressions->string_array = expressions;
+  arg->expressions->len = exprelen;
 }
 
 /**

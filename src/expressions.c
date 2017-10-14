@@ -7,50 +7,63 @@
 #include <sys/stat.h>
 #include "expressions.h"
 #include "utilities.h"
+#include "evalexpr.h"
+#include "parse_arg.h"
 
  /**
- ** \fn void split_string(char *expressions, char **parsed);
- ** \brief Take a string and split it in a list of string separated by space
- ** \param char ***arg pointer on the string of string
+ ** \fn void append_and(struct argument *arg);
+ ** \brief Take the list of expressions, append -print at the end if not
+ ** already passed as arg. Append -a operator if no specified
+ ** \param struct argument *arg, pointer on the main argument structure
  ** \return void.
  */
 
-void split_string(char *expressions, char ***parsed)
+void append_and(struct argument *arg)
 {
-  /* we split the different expressions in a list */
-  char *start = expressions;
-  char *end = expressions;
-
-  int i = 0;
-  size_t size = 0;
-  size_t len = 1;
-
-  for (int i = 0; expressions[i] != '\0'; i++)
-    if (expressions[i] == ' ')
-      len++;
-
-  char **new = malloc(sizeof(char *) * len + 1);
-
-  while (*start != '\0')
+  size_t size = 1;
+  int print = 0;
+  char **expressions = arg->expressions->string_array;
+  for (int i = 0; i < arg->expressions->len; ++i, size++)
   {
-    while (*end != ' ' && *end != '\0')
+    if (my_strcmp(expressions[i], "-print"))
     {
-      size++;
-      end++;
+      size--;
+      print = 1;
     }
-
-    char *cmd = malloc(size+1);
-    memcpy(cmd, start, size);
-    cmd[size] = '\0';
-    new[i] = cmd;
-    i++;
-    start = (end + 1);
-    end++;
-    size = 0;
+    if (my_strcmp(expressions[i], "-name")
+        || my_strcmp(expressions[i], "-type"))
+    {
+      if (i + 2 < arg->expressions->len && !is_operator(expressions[i+2]))
+        size++;
+    }
   }
 
-  new[len] = NULL;
-  *parsed = new;
+  char **new = malloc(sizeof(char *) * size + 1);
+
+  int y = 0;
+  for (int i = 0; i < arg->expressions->len; ++i, ++y)
+  {
+    new[y] = expressions[i];
+    if (my_strcmp(expressions[i], "-name")
+        || my_strcmp(expressions[i], "-type"))
+    {
+      if (i + 2 < arg->expressions->len && !is_operator(expressions[i+2]))
+      {
+        new[y+1] = expressions[i+1];
+        new[y+2] = "-a";
+        y += 2;
+        i++;
+      }
+    }
+  }
+  if (!print)
+  {
+    new[y] = "-a";
+    new[size] = "-print";
+  }
+
+  arg->expressions->string_array = new;
+  arg->expressions->len = size + 1;
 }
 
 int call_function(char *func, char *arg, char *path)

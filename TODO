@@ -19,3 +19,4 @@
 [x] in eval, pop twice, than call func
 [] to_postfix reduce -25 lines same for eval and parse_arg
 [] free everything when errx
+[] remove -g in makefile!

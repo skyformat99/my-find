@@ -1,9 +1,11 @@
 #ifndef EXPRESSIONS_H
 #define EXPRESSIONS_H
 
-void split_string(char *expressions, char ***parsed);
+#include "parse_arg.h"
+
 int test_name(const char *pattern, const char *string);
 int test_type(const char *file, const char *type);
 int call_function(char *func, char *arg, char *path);
+void append_and(struct argument *arg);
 
 #endif
