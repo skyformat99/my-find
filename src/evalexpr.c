@@ -5,19 +5,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int main(void)
+/*int main(void)
 {
     char *input[] = {
-      "!", "1", "-o", "1", "-a", "0", NULL
+      "(", "1", "-o", "0", ")", "-a", "0", NULL
     };
-    char **postfix = malloc(sizeof(char *) * 7);
+    char **postfix = malloc(sizeof(char *) * 6);
     to_postfix(input, postfix);
-    for (int i = 0; i < 7; i++)
-      printf("%s ", postfix[i]);
+    printf("eval : %c\n", eval(postfix));
     free(postfix);
     return 0;
 }
-
+*/
 void to_postfix(char **input, char **postfix)
 {
     char *s;
@@ -65,6 +64,7 @@ void to_postfix(char **input, char **postfix)
         postfix[j] = s;
     }
 
+    postfix[j] = NULL;
     free_stack(stack);
 }
 
@@ -91,70 +91,46 @@ int is_priority(char *data, char *input)
         return 1;
     return 0;
 }
-/*
-int compute(char op, int a, int b, int *result)
-{
-    switch (op)
-    {
-        case '+':
-            *result = a + b;
-            return 0;
-        case '-':
-            *result = a - b;
-            return 0;
-        case '^':
-            *result = power(a, b);
-            return 0;
-        case '*':
-            *result = a * b;
-            return 0;
-        case '/':
-            if (b == 0)
-                return -1;
-            *result = a / b;
-            return 0;
-        case '%':
-            if (b == 0)
-                 return -1;
-            *result = a % b;
-            return 0;
-    }
 
-    return 0;
+int compute(char *op, int a, int b)
+{
+  if (my_strcmp(op, "-o"))
+    return a || b;
+  if (my_strcmp(op, "-a"))
+    return a && b;
+  if (my_strcmp(op, "!"))
+    return !a;
+  else
+    return -1;
 }
 
-static int power(int a, int b)
+char *my_itoa(int a)
 {
-    int result = 1;
-    while (a != 0)
-    {
-        result *= b;
-        --a;
-    }
-    return result;
+  if (a == 0)
+    return "0";
+  return "1";
 }
 
-int eval(char *postfix)
+int eval(char **postfix)
 {
     struct stack *stack = init();
-    char c;
+    char *s;
     int result;
-    for (size_t i = 0; postfix[i] != '\0'; i++)
+    for (size_t i = 0; postfix[i] != NULL; i++)
     {
-        if (postfix[i] >= '0' && postfix[i] <= '9')
-            stack = push(stack, postfix[i]);
-        if (is_operator(postfix[i]))
-        {
-            stack = pop(stack, &c);
-            int a = c - '0';
-            stack = pop(stack, &c);
-            int b = c - '0';
-            if (compute(postfix[i], a, b, &result) == -1)
-                return -42;
-            stack = push(stack, '0' + result);
-        }
+      if (!is_operator(postfix[i]))
+          stack = push(stack, postfix[i]);
+      if (is_operator(postfix[i]))
+      {
+        stack = pop(stack, &s);
+        int a = s[0] - '0';
+        stack = pop(stack, &s);
+        int b = s[0] - '0';
+        result = compute(postfix[i], a, b);
+        stack = push(stack, my_itoa(result));
+      }
     }
-    pop(stack, &c);
-    return c;
+    pop(stack, &s);
+    //free(stack);
+    return s[0];
 }
-*/
