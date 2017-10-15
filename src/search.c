@@ -4,12 +4,12 @@
 #include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include "parse_arg.h"
+#include "evalexpr.h"
 #include "search.h"
 #include "utilities.h"
 
@@ -23,7 +23,7 @@ static int is_valid_dir(char *path, char option);
 ** \param struct argument *arg
 ** \return 0 if succes, greater then 0 otherwise.
 */
-int search(struct argument *arg, char option)
+int search(struct argument *arg, char **postfix, char option)
 {
   char **files = arg->files->string_array;
   int filelen = arg->files->len;
@@ -33,7 +33,7 @@ int search(struct argument *arg, char option)
   {
     if (!(option & OPT_D))
       printf(".\n");
-    r_val += search_in_dir(".", option);
+    r_val += search_in_dir(".", postfix, option);
     if (option & OPT_D)
       printf(".\n");
   }
@@ -43,7 +43,7 @@ int search(struct argument *arg, char option)
     {
       if (is_valid_dir(files[i], option))
       {
-        search_in_dir(files[i], option);
+        search_in_dir(files[i], postfix, option);
         if (option & OPT_D)
           printf("%s\n", files[i]);
       }
@@ -99,7 +99,7 @@ static int is_symlink(char *path)
 ** \param char *path, path to directory
 ** \return 0 if succes, greater then 1 otherwise.
 */
-int search_in_dir(char *path, char option)
+int search_in_dir(char *path, char **postfix, char option)
 {
 
   DIR *dir = opendir(path);
@@ -114,18 +114,19 @@ int search_in_dir(char *path, char option)
     if (!my_strcmp(dp->d_name, ".")
         && !my_strcmp(dp->d_name, ".."))
     {
-      if (!(option & OPT_D))
-        printf("%s/%s\n", path, dp->d_name);
         /* size of the two names + the nul character and the / */
       subdir = calloc(my_strlen(path) + my_strlen(dp->d_name) + 2, 1);
       my_strcat(subdir, path);
       my_strcat(subdir, "/");
       my_strcat(subdir, dp->d_name);
+
+      if (!(option & OPT_D))
+        eval(subdir, postfix);
       if ((is_symlink(subdir) && option & OPT_L) || dp->d_type & DT_DIR)
-          search_in_dir(subdir, option);
-      free(subdir);
+          search_in_dir(subdir, postfix, option);
       if (option & OPT_D)
-        printf("%s/%s\n", path, dp->d_name);
+        eval(subdir, postfix);
+      free(subdir);
     }
   }
 

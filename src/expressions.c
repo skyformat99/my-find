@@ -112,7 +112,7 @@ int call_function(char *func, char *arg, char *path)
 
 int test_name(const char *pattern, const char *string)
 {
-  if (!fnmatch(pattern, string, FNM_PERIOD & FNM_NOESCAPE)) //replace by fn_file_name
+  if (!fnmatch(pattern, string, FNM_PATHNAME)) //replace by fn_file_name
     return 1;
   return 0;
 }
