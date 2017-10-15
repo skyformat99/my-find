@@ -32,10 +32,10 @@ int search(struct argument *arg, char **postfix, char option)
   if (!files)
   {
     if (!(option & OPT_D))
-      printf(".\n");
+      eval(".", postfix);
     r_val += search_in_dir(".", postfix, option);
     if (option & OPT_D)
-      printf(".\n");
+      eval(".", postfix);
   }
   else
   {
@@ -45,7 +45,7 @@ int search(struct argument *arg, char **postfix, char option)
       {
         search_in_dir(files[i], postfix, option);
         if (option & OPT_D)
-          printf("%s\n", files[i]);
+          eval(files[i], postfix);
       }
       else
         r_val++;
