@@ -9,16 +9,15 @@
 /*int main(void)
 {
     char *input[] = {
-      "1", NULL
+      "(", "-name", "slt", "-a", "-name", "b", "-o", "-name", "slt", ")", "-a", "-print"
     };
-    char **postfix = malloc(sizeof(char *) * 2);
-    to_postfix(input, postfix);
-    for (int i = 0; postfix[i] != NULL; i++)
-      printf("%s ", postfix[i]);
-    printf("eval : %d\n", eval(postfix) - '0');
+    char **postfix = malloc(sizeof(char *) * 12);
+    to_postfix(input, 12, postfix);
+
+    eval("slt", postfix);
     free(postfix);
     return 0;
-}*/
+}*/s
 
 /**
 ** \fn void to_postfix(char **input, char **postfix)
@@ -150,35 +149,73 @@ char *my_itoa(int a)
 */
 int eval(char *path, char **postfix)
 {
-    struct stack *stack = init();
-    char *s;
-    int result;
-    for (size_t i = 0; postfix[i] != NULL; i++)
+  struct stack *stack = init();
+  char *s;
+  int result;
+  for (size_t i = 0; postfix[i] != NULL; i++)
+  {
+    if (!is_operator(postfix[i]))
+        stack = push(stack, postfix[i]);
+    if (is_operator(postfix[i]))
     {
-      if (!is_operator(postfix[i]))
-          stack = push(stack, postfix[i]);
-      if (is_operator(postfix[i]))
+      int a = 0;
+      int b = 0;
+      char *arg = NULL;
+      stack = pop(stack, &s);
+      char *func = s;
+      if (my_strcmp(func, "0") || my_strcmp(func, "1"))
+        a = func[0] - '0';
+      else if (!my_strcmp(postfix[i], "!"))
       {
-          int b = 0;
+        if (my_strcmp(func, "-print"))
+        {
           stack = pop(stack, &s);
-          char *func = s;
-          stack = pop(stack, &s);
-          char *arg = s;
-          int a = call_function(func, arg, path);
-          if (!my_strcmp(postfix[i], "!"))
+          if (my_strcmp(s, "0"))
+            b = s[0] - '0';
+          else if (my_strcmp(s, "1"))
+            b = s[0] - '0';
+          else
           {
+            arg = s;
             stack = pop(stack, &s);
             func = s;
-            stack = pop(stack, &s);
-            arg = s;
             b = call_function(func, arg, path);
           }
-          result = compute(postfix[i], a, b);
+          a = call_function("-print", my_itoa(b), path);
+        }
+        else
+        {
+          arg = func;
+          stack = pop(stack, &s);
+          func = s;
+/*          stack = pop(stack, &s);
+          arg = s;*/
+          a = call_function(func, arg, path);
+          stack = pop(stack, &s);
+          if (my_strcmp(s, "0"))
+            b = s[0] - '0';
+          else if (my_strcmp(s, "1"))
+            b = s[0] - '0';
+          else
+          {
+            arg = s;
+            stack = pop(stack, &s);
+            func = s;
+            b = call_function(func, arg, path);
+          }
+        }
       }
-        stack = push(stack, my_itoa(result));
+      else
+      {
+        stack = pop(stack, &s);
+        char *arg = s;
+        a = call_function(func, arg, path);
+      }
+      result = compute(postfix[i], a, b);
+      stack = push(stack, my_itoa(result));
     }
+  }
 
-    pop(stack, &s);
-    //free(stack);
-    return s[0] - '0';
+  pop(stack, &s);
+  return s[0] - '0';
 }

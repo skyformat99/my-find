@@ -77,13 +77,15 @@ int call_function(char *func, char *arg, char *path)
     return test_name(path, arg);
   if (my_strcmp(func, "-type"))
     return test_type(path, arg);
+  if (my_strcmp(func, "-print"))
+    return print(path, arg[0] - '0');
   else
     errx(1, "unknown predicate `%s'", func);
 }
 
 int test_name(const char *pattern, const char *string)
 {
-  if (!fnmatch(pattern, string, FNM_PATHNAME)) //replace by fn_file_name
+  if (!fnmatch(pattern, string, FNM_PERIOD & FNM_NOESCAPE)) //replace by fn_file_name
     return 1;
   return 0;
 }
@@ -109,4 +111,11 @@ int test_type(const char *file, const char *type)
     return S_ISSOCK(filestat.st_mode);
   else
     errx(1, "Unknown argument to -type: %s", type);
+}
+
+int print(const char* path, int eval)
+{
+  if (eval)
+    printf("%s\n", path);
+  return 1;
 }

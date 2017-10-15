@@ -11,7 +11,7 @@
 [] options overide each other
 [] check memory leaks
 [x] find out if expressions can be given as only arg of find
-[] yes they can, implement it now
+[x] yes they can, implement it now
 [] remember to free the parsed list of expre
 [] check if first expr is valid
 [] RECODE MEMCPY AND STRCPY
@@ -20,4 +20,6 @@
 [] MORE THEN 25L: to_postfix,eval,parse_arg,append_and
 [] free everything when errx
 [] remove -g in makefile!
-[] append -a after -print when not at the end
+[x] append -a after -print when not at the end
+[] fnmatch doesn't match glowbing
+[] add parenthesis before -a -print
