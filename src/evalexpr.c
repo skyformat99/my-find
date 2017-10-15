@@ -17,7 +17,7 @@
     eval("slt", postfix);
     free(postfix);
     return 0;
-}*/s
+}*/
 
 /**
 ** \fn void to_postfix(char **input, char **postfix)
