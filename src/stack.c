@@ -1,7 +1,6 @@
 #include "stack.h"
 #include "utilities.h"
 #include <stdlib.h>
-
 /**
 ** \fn struct stack *init(void)
 ** \brief init a new stack

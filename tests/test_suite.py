@@ -13,7 +13,7 @@ def generate_architecture():
     os.system("mkdir -p architecture/lundi/mercredi/jeudi")
     os.system("mkdir -p architecture/samedi/vendredi")
     os.system("mkdir link")
-    os.system("touch link/InsideSymlink; ln -s -T " + os.getcwd() 
+    os.system("touch link/InsideSymlink; ln -s -T " + os.getcwd()
                + "/link" + " architecture/symlink")
     extensions = ["txt", "mp3", "py"]
     for i in range(3):
@@ -47,10 +47,13 @@ def make_test(arg):
 
 def run_test():
 
-    thr_one = [".", "", "./", "../", "lundi", "samedi", "lundi samedi"]
+    thr_zero = [".", "", "./", "../", "lundi", "samedi", "lundi samedi"]
+    call_program(thr_zero)
+    print(BOLD + " -  THRESHOLD 0" + END)
+    thr_one = ["-d", "-H", "-L", "-P", "-d ../", "-L samedi", "-H symlink", "symlink"]
     call_program(thr_one)
     print(BOLD + " -  THRESHOLD 1" + END)
-    thr_two = ["-d", "-H", "-L", "-P", "-d ../", "-L samedi", "-H symlink", "symlink"]
+    thr_two = ["samedi -name '*.mp3'", "-type d", "-type f", "-name '*.mp3'", "-type l"]
     call_program(thr_two)
     print(BOLD + " -  THRESHOLD 2" + END)
 
