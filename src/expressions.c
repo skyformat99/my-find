@@ -11,11 +11,14 @@
 #include "parse_arg.h"
 
 static int get_lenformat(char **expressions, int len, int *print);
+static int test_name(const char *pattern, const char *string);
+static int print(const char* path, int eval);
 
  /**
  ** \fn void append_and(struct argument *arg);
  ** \brief Take the list of expressions, append -print at the end if not
- ** already passed as arg. Append -a operator if no specified
+ ** already passed as arg, put's parenthentesis around expressions .
+ ** before -a print. Append -a operator if no specified
  ** \param struct argument *arg, pointer on the main argument structure
  ** \return void.
  */
@@ -78,7 +81,13 @@ void format_expr(struct argument *arg)
   arg->expressions->string_array = new;
   arg->expressions->len = size;
 }
-
+/**
+** \fn static int get_lenformat(char **expressions, int len, int *print)
+** \brief Take the list of expressions, computes the length needed
+** for the formatted string
+** \param char **expressions, the expression in prefix order, int len it's len
+** \return the size need for the formatted expression.
+*/
 static int get_lenformat(char **expressions, int len, int *print)
 {
   int size = len;
@@ -99,7 +108,13 @@ static int get_lenformat(char **expressions, int len, int *print)
   size += *print ? 0 : 4;
   return size;
 }
-
+/**
+** \fn int call_function(char *func, char *arg, char *path)
+** \brief Call the function given as a string with argument and path.
+** \param char *func, the function to call, char *arg, its argument,
+** char *path, th epath on which to make the test.
+** \return the return value of the funcion called
+*/
 int call_function(char *func, char *arg, char *path)
 {
   if (my_strcmp(func, "-name"))
@@ -111,14 +126,26 @@ int call_function(char *func, char *arg, char *path)
   else
     errx(1, "unknown predicate `%s'", func);
 }
-
-int test_name(const char *pattern, const char *string)
+/**
+** \fn static int test_name(const char *pattern, const char *string)
+** \brief test if pattern matches string.
+** \param const char *pattern, the pattern, const char *string, the name to
+** test.
+** \return 1 if pattern matches string, zero otherwise
+*/
+static int test_name(const char *pattern, const char *string)
 {
   if (!fnmatch(pattern, string, 0)) //replace by fn_file_name
     return 1;
   return 0;
 }
-
+/**
+** \fn static int test_type(const char *file, const char *type)
+** \brief test if file is of type type.
+** \param const char *file, the path to file, const char *type, the type we
+** want to test.
+** \return 1 if file is of type refered by type
+*/
 int test_type(const char *file, const char *type)
 {
   struct stat filestat;
@@ -141,8 +168,13 @@ int test_type(const char *file, const char *type)
   else
     errx(1, "Unknown argument to -type: %s", type);
 }
-
-int print(const char* path, int eval)
+/**
+** \fn static int print(const char* path, int eval)
+** \brief print path if eval is true
+** \param const char* path, the path, int eval, boolean
+** \return 1
+*/
+static int print(const char* path, int eval)
 {
   if (eval)
     printf("%s\n", path);

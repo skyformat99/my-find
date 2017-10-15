@@ -1,13 +1,13 @@
 /**
- * \file myfind.c
- * \brief light implementation of find(1).
- * \author noel_m
- * \version 0.1
- * \date 10 Octobre 2017
- *
- * Programme to find a file in a given architecture.
- *
- */
+** \file myfind.c
+** \brief light implementation of find(1).
+** \author noel_m
+** \version 0.1
+** \date 10 Octobre 2017
+**
+** Programme to find a file in a given architecture.
+**
+*/
 
 #include <errno.h>
 #include <stdlib.h>
@@ -49,13 +49,12 @@ int main(int argc, char *argv[])
   return r_val != 0;
 }
 
- /**
- ** \fn struct argument *init_arg(void)
- ** \brief Creation of a new instance of an object of type struct argument.
- **
- ** \param None.
- ** \return new instance of type argumznt or NULL if malloc failed.
- */
+/**
+** \fn struct argument *init_arg(void)
+** \brief Creation of a new instance of an object of type struct argument.
+** \param None.
+** \return new instance of type argumznt or NULL if malloc failed.
+*/
 struct argument *init_arg(void)
 {
   struct argument *arg = malloc(sizeof(struct argument));
@@ -70,13 +69,12 @@ struct argument *init_arg(void)
   return arg;
 }
 
- /**
- ** \fn void free_arg(struct argument *arg)
- ** \brief Free the argument structure and its field.
- **
- ** \param struct argument *arg.
- ** \return void.
- */
+/**
+** \fn void free_arg(struct argument *arg)
+** \brief Free the argument structure and its field.
+** \param struct argument *arg.
+** \return void.
+*/
 void free_arg(struct argument *arg)
 {
   free(arg->options);

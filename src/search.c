@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include "parse_arg.h"
 #include "evalexpr.h"
+#include "expressions.h"
 #include "search.h"
 #include "utilities.h"
 
@@ -20,7 +21,9 @@ static int is_valid_dir(char *path, char **postfix, int len, char option);
 ** \fn int search(struct argument *arg)
 ** \brief Search in all the dir given as argument.
 **
-** \param struct argument *arg
+** \param struct argument *arg, the main argument struct,
+** char **postfix, the array of expressions in postfix, int len,
+** the len of postfix, char option, the option flag.
 ** \return 0 if succes, greater then 0 otherwise.
 */
 int search(struct argument *arg, char **postfix, int len, char option)
@@ -53,12 +56,24 @@ int search(struct argument *arg, char **postfix, int len, char option)
   }
   return r_val;
 }
-
+/**
+** \fn is_valid_dir(char *path, char **postfix, int len, char option)
+** \brief Check if dir given as arg is valid and print its name.
+** \param char *path, the path toward the dir to check,
+** char **postfix, the array of expressions in postfix,
+**  int len, the len of postfix, char option, the option flag.
+** \return 1 if directory is a symlink, 0 otherwise.
+*/
 static int is_valid_dir(char *path, char **postfix, int len, char option)
 {
   DIR *dir = opendir(path);
   if (!dir)
   {
+    if (test_type(path, "f"))
+    {
+      eval(path, postfix, len);
+      return 0;
+    }
     warnx("‘%s’: No such file or directory", path);
     return 0;
   }
@@ -74,7 +89,6 @@ static int is_valid_dir(char *path, char **postfix, int len, char option)
   closedir(dir);
   return 1;
 }
-
 /**
 ** \fn static int is_symlink(char *path)
 ** \brief Indicates if dir at path is symbolic link
@@ -91,7 +105,6 @@ static int is_symlink(char *path)
 
   return 0;
 }
-
 /**
 ** \fn int search_in_dir(char *path)
 ** \brief Recursively print the content of dir and the content of the

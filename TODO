@@ -24,3 +24,4 @@
 [] fnmatch doesn't match glowbing
 [x] add parenthesis before -a -print
 [] test with every fsanitize possible
+[] -print -o -print should only pring once
