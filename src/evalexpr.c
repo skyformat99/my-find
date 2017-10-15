@@ -24,15 +24,16 @@
 ** \fn void to_postfix(char **input, char **postfix)
 ** \brief Converts list of string in infix representation to postfix.
 **
-** \param char **input list of string in infix, char **postfix output.
+** \param char **input list of string in infix, int len its size,
+** char **postfix output.
 ** \return None.
 */
-void to_postfix(char **input, char **postfix)
+void to_postfix(char **input, int len, char **postfix)
 {
     char *s;
     struct stack *stack = init();
     size_t j = 0;
-    for (size_t i = 0; input[i] != NULL; ++i)
+    for (int i = 0; i < len; ++i)
     {
         if (!is_operator(input[i]) && !my_strcmp(input[i], "(")
             && !my_strcmp(input[i], ")"))

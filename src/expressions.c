@@ -38,7 +38,7 @@ void append_and(struct argument *arg)
     }
   }
 
-  char **new = malloc(sizeof(char *) * size + 2);
+  char **new = calloc(size + 2, sizeof(char *));
 
   int y = 0;
   for (int i = 0; i < arg->expressions->len; ++i, ++y)
