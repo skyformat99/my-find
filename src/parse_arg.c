@@ -23,8 +23,8 @@ void parse_arg(int argc, char *argv[], struct argument *arg)
 
   for (int i = 0; i < argc - 1; ++i, ++argv)
   {
-    if (**argv == '-' && *(*argv + 1) != 'd' && *(*argv + 1) != 'H'
-        && *(*argv + 1) != 'L' && *(*argv + 1) != 'P')
+    if ((**argv == '-' || **argv == '(') && *(*argv + 1) != 'd'
+        && *(*argv + 1) != 'H' && *(*argv + 1) != 'L' && *(*argv + 1) != 'P')
     {
         if (!expressions)
           expressions = argv;
@@ -44,7 +44,7 @@ void parse_arg(int argc, char *argv[], struct argument *arg)
         files = argv;
       if (!expressions)
         filelen++;
-      if (expressions)
+      if (expressions && i != 0)
         exprelen++;
     }
   }
