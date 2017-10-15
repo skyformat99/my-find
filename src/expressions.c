@@ -103,7 +103,7 @@ static int get_lenformat(char **expressions, int len, int *print)
 int call_function(char *func, char *arg, char *path)
 {
   if (my_strcmp(func, "-name"))
-    return test_name(path, arg);
+    return test_name(arg, path);
   if (my_strcmp(func, "-type"))
     return test_type(path, arg);
   if (my_strcmp(func, "-print"))
@@ -114,7 +114,7 @@ int call_function(char *func, char *arg, char *path)
 
 int test_name(const char *pattern, const char *string)
 {
-  if (!fnmatch(pattern, string, FNM_PATHNAME)) //replace by fn_file_name
+  if (!fnmatch(pattern, string, 0)) //replace by fn_file_name
     return 1;
   return 0;
 }

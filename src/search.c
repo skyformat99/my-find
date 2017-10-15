@@ -14,7 +14,7 @@
 #include "utilities.h"
 
 static int is_symlink(char *path);
-static int is_valid_dir(char *path, char option);
+static int is_valid_dir(char *path, char **postfix, int len, char option);
 
 /**
 ** \fn int search(struct argument *arg)
@@ -41,7 +41,7 @@ int search(struct argument *arg, char **postfix, int len, char option)
   {
     for (int i = 0; i < filelen; i++)
     {
-      if (is_valid_dir(files[i], option))
+      if (is_valid_dir(files[i], postfix, len, option))
       {
         search_in_dir(files[i], postfix, len, option);
         if (option & OPT_D)
@@ -54,7 +54,7 @@ int search(struct argument *arg, char **postfix, int len, char option)
   return r_val;
 }
 
-static int is_valid_dir(char *path, char option)
+static int is_valid_dir(char *path, char **postfix, int len, char option)
 {
   DIR *dir = opendir(path);
   if (!dir)
@@ -65,11 +65,11 @@ static int is_valid_dir(char *path, char option)
   /* if the dir is a simlink and D or L option not set, we print and stop */
   if (is_symlink(path) && (!(option & OPT_H) && !(option & OPT_L)))
   {
-    printf("%s\n", path);
+    eval(path, postfix, len);
     return 0;
   }
   if (!(option & OPT_D))
-    printf("%s\n", path);
+    eval(path, postfix, len);
 
   closedir(dir);
   return 1;

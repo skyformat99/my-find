@@ -171,6 +171,8 @@ int eval(char *path, char **postfix, int len)
             b = s[0] - '0';
           else if (my_strcmp(s, "1"))
             b = s[0] - '0';
+          else if (my_strcmp(s, "-print"))
+            b = call_function("-print", "1", path);
           else
           {
             char *arg = s;
