@@ -22,4 +22,5 @@
 [] remove -g in makefile!
 [x] append -a after -print when not at the end
 [] fnmatch doesn't match glowbing
-[] add parenthesis before -a -print
+[x] add parenthesis before -a -print
+[] test with every fsanitize possible

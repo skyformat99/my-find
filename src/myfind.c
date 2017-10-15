@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
   len = to_postfix(arg->expressions->string_array, len, postfix);
 
   r_val = search(arg, postfix, len, option);
+  free(postfix);
   free_arg(arg);
   return r_val != 0;
 }

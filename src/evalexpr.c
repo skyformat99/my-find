@@ -73,7 +73,6 @@ int to_postfix(char **input, int len, char **postfix)
         stack = pop(stack, &s);
         postfix[j] = s;
     }
-    postfix[j] = NULL;
     free_stack(stack);
     return j;
 }
