@@ -3,7 +3,6 @@
 #include <fnmatch.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include <sys/stat.h>
 #include "expressions.h"
 #include "utilities.h"

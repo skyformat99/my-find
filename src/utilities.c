@@ -43,3 +43,13 @@ char *my_strcat(char *s1, const char *s2)
 
   return s1;
 }
+
+char *my_strcpy(char *dst, const char *src)
+{
+  char *s = dst;
+  int i = 0;
+  for (; src[i] != '\0'; ++i)
+    dst[i] = src[i];
+  dst[i] = '\0';
+  return s;
+}

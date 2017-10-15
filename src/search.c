@@ -1,8 +1,6 @@
 #include <dirent.h>
-#include <errno.h>
 #include <err.h>
 #include <fcntl.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -118,8 +116,8 @@ int search_in_dir(char *path, char **postfix, int len, char option)
   DIR *dir = opendir(path);
   char *subdir = NULL;
   struct dirent *dp = NULL;
-  if (path[strlen(path) -1] == '/')
-      path[strlen(path)-1] = '\0';
+  if (path[my_strlen(path) -1] == '/')
+      path[my_strlen(path)-1] = '\0';
 
   while ((dp = readdir(dir)))
   {

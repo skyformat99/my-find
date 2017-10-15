@@ -1,7 +1,6 @@
 #include "stack.h"
 #include "utilities.h"
 #include <stdlib.h>
-#include <string.h>
 
 /**
 ** \fn struct stack *init(void)
@@ -29,7 +28,7 @@ struct stack *push(struct stack *head, char *data)
     if (!new)
         return NULL;
     char *string = malloc(my_strlen(data)+1);
-    strcpy(string, data);
+    my_strcpy(string, data);
     new->data = string;
     new->next = head;
     return new;
@@ -43,7 +42,7 @@ struct stack *push(struct stack *head, char *data)
 struct stack *pop(struct stack *head, char **data)
 {
     *data = malloc(my_strlen(head->data) + 1);
-    strcpy(*data, head->data);
+    my_strcpy(*data, head->data);
     struct stack *new = head->next;
     free(head->data);
     free(head);

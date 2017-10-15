@@ -6,19 +6,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/*int main(void)
-{
-    char *input[] = {
-      "(", "-name", "slt", ")", "-a", "-print"
-    };
-    char **postfix = malloc(sizeof(char *) * 6);
-    to_postfix(input, 6, postfix);
-
-    eval("slt", postfix);
-    free(postfix);
-    return 0;
-}*/
-
 /**
 ** \fn void to_postfix(char **input, char **postfix)
 ** \brief Converts list of string in infix representation to postfix.
