@@ -33,16 +33,17 @@ int main(int argc, char *argv[])
   char option = get_options(arg);
   format_expr(arg);
 
-  char **postfix = calloc(arg->expressions->len, sizeof(char *));
+  int len = arg->expressions->len;
+  char **postfix = calloc(len, sizeof(char *));
   if (!postfix)
   {
     printf("mydinf: %s\n", strerror(errno));
     return 1;
   }
 
-  to_postfix(arg->expressions->string_array, arg->expressions->len, postfix);
+  len = to_postfix(arg->expressions->string_array, len, postfix);
 
-  r_val = search(arg, postfix, option);
+  r_val = search(arg, postfix, len, option);
   free_arg(arg);
   return r_val != 0;
 }

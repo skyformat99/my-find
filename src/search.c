@@ -23,7 +23,7 @@ static int is_valid_dir(char *path, char option);
 ** \param struct argument *arg
 ** \return 0 if succes, greater then 0 otherwise.
 */
-int search(struct argument *arg, char **postfix, char option)
+int search(struct argument *arg, char **postfix, int len, char option)
 {
   char **files = arg->files->string_array;
   int filelen = arg->files->len;
@@ -32,10 +32,10 @@ int search(struct argument *arg, char **postfix, char option)
   if (!files)
   {
     if (!(option & OPT_D))
-      eval(".", postfix);
-    r_val += search_in_dir(".", postfix, option);
+      eval(".", postfix, len);
+    r_val += search_in_dir(".", postfix, len, option);
     if (option & OPT_D)
-      eval(".", postfix);
+      eval(".", postfix, len);
   }
   else
   {
@@ -43,9 +43,9 @@ int search(struct argument *arg, char **postfix, char option)
     {
       if (is_valid_dir(files[i], option))
       {
-        search_in_dir(files[i], postfix, option);
+        search_in_dir(files[i], postfix, len, option);
         if (option & OPT_D)
-          eval(files[i], postfix);
+          eval(files[i], postfix, len);
       }
       else
         r_val++;
@@ -99,7 +99,7 @@ static int is_symlink(char *path)
 ** \param char *path, path to directory
 ** \return 0 if succes, greater then 1 otherwise.
 */
-int search_in_dir(char *path, char **postfix, char option)
+int search_in_dir(char *path, char **postfix, int len, char option)
 {
 
   DIR *dir = opendir(path);
@@ -121,11 +121,11 @@ int search_in_dir(char *path, char **postfix, char option)
       my_strcat(subdir, dp->d_name);
 
       if (!(option & OPT_D))
-        eval(subdir, postfix);
+        eval(subdir, postfix, len);
       if ((is_symlink(subdir) && option & OPT_L) || dp->d_type & DT_DIR)
-          search_in_dir(subdir, postfix, option);
+          search_in_dir(subdir, postfix, len, option);
       if (option & OPT_D)
-        eval(subdir, postfix);
+        eval(subdir, postfix, len);
       free(subdir);
     }
   }
