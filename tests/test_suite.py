@@ -56,6 +56,10 @@ def run_test():
     thr_two = ["samedi -name '*.mp3'", "-type d", "-type f", "-name '*.mp3'", "-type l"]
     call_program(thr_two)
     print(BOLD + " -  THRESHOLD 2" + END)
+    thr_three = ["-name '*.mp3' -o -name '*.txt'", "-name samedi -type f", "-name samedi -a -type d",
+                 "-name samedi -o -type f", "-print -a -print", "-print -o -print"]
+    call_program(thr_three)
+    print(BOLD + " -  THRESHOLD 3" + END)
 
 os.chdir("tests")
 generate_architecture()
