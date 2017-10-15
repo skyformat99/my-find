@@ -10,6 +10,8 @@
 #include "evalexpr.h"
 #include "parse_arg.h"
 
+static int get_lenformat(char **expressions, int len, int *print);
+
  /**
  ** \fn void append_and(struct argument *arg);
  ** \brief Take the list of expressions, append -print at the end if not
@@ -17,30 +19,38 @@
  ** \param struct argument *arg, pointer on the main argument structure
  ** \return void.
  */
-
-void append_and(struct argument *arg)
+void format_expr(struct argument *arg)
 {
-  size_t size = 0;
   int print = 0;
-  char **expressions = arg->expressions->string_array;
-  for (int i = 0; i < arg->expressions->len; ++i, size++)
+  int y = 0;
+
+  char *empty[] = {
+    "-name", "*", "-a", "-print"
+  };
+  if (arg->expressions->len == 0)
   {
-    if (my_strcmp(expressions[i], "-print"))
-    {
-      size--;
-      print = 1;
-    }
-    if (my_strcmp(expressions[i], "-name")
-        || my_strcmp(expressions[i], "-type"))
-    {
-      if (i + 2 < arg->expressions->len && !is_operator(expressions[i+2]))
-        size++;
-    }
+    char **new = calloc(4, sizeof(char *));
+    for (int i = 0; i < 4; ++i)
+      new[i] = empty[i];
+    arg->expressions->len = 4;
+    arg->expressions->string_array = new;
+    return;
   }
 
-  char **new = calloc(size + 2, sizeof(char *));
+  char **expressions = arg->expressions->string_array;
+  int size = get_lenformat(expressions, arg->expressions->len, &print);
 
-  int y = 0;
+  char **new = calloc(size, sizeof(char *));
+
+  if (!print)
+  {
+    new[0] = "(";
+    new[size - 3] = ")";
+    new[size - 2] = "-a";
+    new[size - 1] = "-print";
+    y++;
+  }
+
   for (int i = 0; i < arg->expressions->len; ++i, ++y)
   {
     new[y] = expressions[i];
@@ -55,20 +65,37 @@ void append_and(struct argument *arg)
         i++;
       }
     }
-  }
-  if (!print)
-  {
-    if (arg->expressions->len != 0)
-    {
-      new[y] = "-a";
-      new[y + 1] = "-print";
-    }
-    else
-      new[size] = "-print";
+
+    if (my_strcmp(expressions[i], "-print"))
+      if (i + 1 < arg->expressions->len && !is_operator(expressions[i+1]))
+      {
+        new[y+1] = "-a";
+        y++;
+      }
   }
 
   arg->expressions->string_array = new;
-  arg->expressions->len = size + (size == 0 ? 1 : 2);
+  arg->expressions->len = size;
+}
+
+static int get_lenformat(char **expressions, int len, int *print)
+{
+  int size = len;
+  for (int i = 0; i < len; ++i)
+  {
+    if (my_strcmp(expressions[i], "-name")
+        || my_strcmp(expressions[i], "-type"))
+        if (i + 2 < len && !is_operator(expressions[i+2]))
+          size++;
+    if (my_strcmp(expressions[i], "-print"))
+      if (i + 1 < len && !is_operator(expressions[i+1]))
+        size++;
+    if (my_strcmp(expressions[i], "-print"))
+      *print = 1;
+  }
+
+  size += *print ? 0 : 4;
+  return size;
 }
 
 int call_function(char *func, char *arg, char *path)

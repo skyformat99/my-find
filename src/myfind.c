@@ -30,7 +30,9 @@ int main(int argc, char *argv[])
   }
   parse_arg(argc, &argv[1], arg);
   //char option = get_options(arg);
-  append_and(arg);
+  format_expr(arg);
+  for (int i = 0; i < arg->expressions->len; i++)
+    printf("%s ", arg->expressions->string_array[i]);
   char **postfix = calloc(arg->expressions->len, sizeof(char *));
   if (!postfix)
   {
@@ -38,10 +40,8 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  to_postfix(arg->expressions->string_array, arg->expressions->len, postfix);
+  //to_postfix(arg->expressions->string_array, arg->expressions->len, postfix);
 
-  for (int i = 0; i < arg->expressions->len; i++)
-    printf("%s ", postfix[i]);
   //r_val = search(arg, option);
   free_arg(arg);
   return r_val != 0;

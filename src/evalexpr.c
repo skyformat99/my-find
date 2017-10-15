@@ -9,10 +9,10 @@
 /*int main(void)
 {
     char *input[] = {
-      "(", "-name", "slt", "-a", "-name", "b", "-o", "-name", "slt", ")", "-a", "-print"
+      "(", "-name", "slt", ")", "-a", "-print"
     };
-    char **postfix = malloc(sizeof(char *) * 12);
-    to_postfix(input, 12, postfix);
+    char **postfix = malloc(sizeof(char *) * 6);
+    to_postfix(input, 6, postfix);
 
     eval("slt", postfix);
     free(postfix);
@@ -29,7 +29,7 @@
 */
 void to_postfix(char **input, int len, char **postfix)
 {
-    char *s;
+    char *s = NULL;
     struct stack *stack = init();
     size_t j = 0;
     for (int i = 0; i < len; ++i)
@@ -150,8 +150,7 @@ char *my_itoa(int a)
 int eval(char *path, char **postfix)
 {
   struct stack *stack = init();
-  char *s;
-  int result;
+  char *s = NULL;
   for (size_t i = 0; postfix[i] != NULL; i++)
   {
     if (!is_operator(postfix[i]))
@@ -160,7 +159,6 @@ int eval(char *path, char **postfix)
     {
       int a = 0;
       int b = 0;
-      char *arg = NULL;
       stack = pop(stack, &s);
       char *func = s;
       if (my_strcmp(func, "0") || my_strcmp(func, "1"))
@@ -176,7 +174,7 @@ int eval(char *path, char **postfix)
             b = s[0] - '0';
           else
           {
-            arg = s;
+            char *arg = s;
             stack = pop(stack, &s);
             func = s;
             b = call_function(func, arg, path);
@@ -185,11 +183,9 @@ int eval(char *path, char **postfix)
         }
         else
         {
-          arg = func;
+          char *arg = func;
           stack = pop(stack, &s);
           func = s;
-/*          stack = pop(stack, &s);
-          arg = s;*/
           a = call_function(func, arg, path);
           stack = pop(stack, &s);
           if (my_strcmp(s, "0"))
@@ -211,7 +207,7 @@ int eval(char *path, char **postfix)
         char *arg = s;
         a = call_function(func, arg, path);
       }
-      result = compute(postfix[i], a, b);
+      int result = compute(postfix[i], a, b);
       stack = push(stack, my_itoa(result));
     }
   }
