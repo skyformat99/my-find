@@ -148,7 +148,14 @@ int eval(char *path, char **postfix, int len)
       stack = pop(stack, &s);
       char *func = s;
       if (my_strcmp(func, "0") || my_strcmp(func, "1"))
+      {
         a = func[0] - '0';
+        stack = pop(stack, &s);
+        char *arg = s;
+        stack = pop(stack, &s);
+        func = s;
+        b = call_function(func, arg, path);
+      }
       else if (!my_strcmp(postfix[i], "!"))
       {
         if (my_strcmp(func, "-print"))
