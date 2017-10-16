@@ -101,15 +101,23 @@ void is_valid_expr(struct argument *arg)
     if (expressions[i][0] == '-')
     {
       if (my_strcmp(expressions[i], "-name")
-          || my_strcmp(expressions[i], "-type")
-          || my_strcmp(expressions[i], "-exec"))
+          || my_strcmp(expressions[i], "-type")) 
       {
         if (i + 1 >= arg->expressions->len)
           errx(1, "missing argument to `%s'", expressions[i]);
         ++i;
         continue;
       }
-
+      if (my_strcmp(expressions[i], "-exec")
+          || my_strcmp(expressions[i], "-execdir"))
+      {
+        int j;
+        for (j = i; j < arg->expressions->len
+                             && expressions[j][0] != ';'; j++)
+          ;
+        if (j >= arg->expressions->len)
+          errx(1, "missing argument to `%s'", expressions[i]);
+      }
       if (my_strcmp(expressions[i], "-print"))
       {
         ++i;

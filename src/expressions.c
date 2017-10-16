@@ -97,6 +97,10 @@ static int get_lenformat(char **expressions, int len, int *print)
         if (i + 2 < len && !is_operator(expressions[i+2])
             && !my_strcmp(expressions[i+2], ")"))
           size++;
+    if (my_strcmp(expressions[i], "-exec")
+        || my_strcmp(expressions[i], "-execdir"))
+        for (int j = 0; expressions[i][j] != ';'; j++, i++)
+           size--; 
     if (my_strcmp(expressions[i], "-print"))
       if (i + 1 < len && !is_operator(expressions[i+1]))
         size++;
