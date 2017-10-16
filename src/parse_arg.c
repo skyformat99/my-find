@@ -111,12 +111,14 @@ void is_valid_expr(struct argument *arg)
       if (my_strcmp(expressions[i], "-exec")
           || my_strcmp(expressions[i], "-execdir"))
       {
-        int j;
-        for (j = i; j < arg->expressions->len
+        int j = i;
+        for (; j < arg->expressions->len
                              && expressions[j][0] != ';'; j++)
           ;
         if (j >= arg->expressions->len)
           errx(1, "missing argument to `%s'", expressions[i]);
+        i = j + 1;
+        continue;
       }
       if (my_strcmp(expressions[i], "-print"))
       {
@@ -129,7 +131,6 @@ void is_valid_expr(struct argument *arg)
       {
         if (i + 1 >= arg->expressions->len)
           errx(1, "expected an expression after '%s'", expressions[i]);
-        continue;
       }
       else
         errx(1, "unknown predicate `%s'", expressions[i]);
