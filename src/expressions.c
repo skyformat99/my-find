@@ -10,7 +10,7 @@
 #include "parse_arg.h"
 
 static int get_lenformat(char **expressions, int len, int *print);
-static int test_name(const char *pattern, const char *string);
+static int test_name(const char *pattern, char *string);
 static int print(const char* path, int eval);
 
  /**
@@ -132,9 +132,15 @@ int call_function(char *func, char *arg, char *path)
 ** test.
 ** \return 1 if pattern matches string, zero otherwise
 */
-static int test_name(const char *pattern, const char *string)
+static int test_name(const char *pattern, char *string)
 {
-  if (!fnmatch(pattern, string, 0)) //replace by fn_file_name
+  char *cur = string;
+
+  for (int i = 0; string[i] != '\0'; i++)
+    if (string[i] == '/')
+        cur = string + i; 
+   
+  if (!fnmatch(pattern, cur+1, 0))
     return 1;
   return 0;
 }
