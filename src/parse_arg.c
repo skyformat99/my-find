@@ -56,7 +56,6 @@ void parse_arg(int argc, char *argv[], struct argument *arg)
   arg->expressions->string_array = expressions;
   arg->expressions->len = exprelen;
 }
-
 /**
 ** \fn char get_options(struct argument *arg)
 ** \brief get the different options and sets the flags.
@@ -85,4 +84,47 @@ char get_options(struct argument *arg)
       errx(1, "unknown predicate `%s'", options[i]);
   }
   return option;
+}
+/**
+** \fn char get_options(struct argument *arg)
+** \brief get the different options and sets the flags.
+**
+** \param a pointer on an argument structure
+** \return a char with all the flag sets.
+*/
+void is_valid_expr(struct argument *arg)
+{
+  char **expressions = arg->expressions->string_array;
+
+  for (int i = 0; i < arg->expressions->len; ++i)
+  {
+    if (expressions[i][0] == '-')
+    {
+      if (my_strcmp(expressions[i], "-name")
+          || my_strcmp(expressions[i], "-type")
+          || my_strcmp(expressions[i], "-exec"))
+      {
+        if (i + 1 >= arg->expressions->len)
+          errx(1, "missing argument to `%s'", expressions[i]);
+        ++i;
+        continue;
+      }
+
+      if (my_strcmp(expressions[i], "-print"))
+      {
+        ++i;
+        continue;
+      }
+
+      if (my_strcmp(expressions[i], "-o")
+          || my_strcmp(expressions[i], "-a"))
+      {
+        if (i + 1 >= arg->expressions->len)
+          errx(1, "expected an expression after '%s'", expressions[i]);
+        continue;
+      }
+      else
+        errx(1, "unknown predicate `%s'", expressions[i]);
+    }
+  }
 }

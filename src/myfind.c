@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
 
   parse_arg(argc, &argv[1], arg);
   char option = get_options(arg);
+  is_valid_expr(arg);
   format_expr(arg);
 
   int len = arg->expressions->len;

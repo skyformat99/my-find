@@ -32,5 +32,6 @@ enum options {
 
 void parse_arg(int argc, char *argv[], struct argument *arg);
 char get_options(struct argument *arg);
+void is_valid_expr(struct argument *arg);
 
 #endif
