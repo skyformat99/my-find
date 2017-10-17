@@ -45,6 +45,9 @@ int main(int argc, char *argv[])
   len = to_postfix(arg->expressions->string_array, len, postfix);
 
   r_val = search(arg, postfix, len, option);
+//  for (int i = 0; i < len; ++i)
+//    free(postfix[i]);
+
   free(postfix);
   free_arg(arg);
   return r_val != 0;
@@ -80,6 +83,7 @@ void free_arg(struct argument *arg)
 {
   free(arg->options);
   free(arg->files);
+  free(arg->expressions->string_array);
   free(arg->expressions);
   free(arg);
 }

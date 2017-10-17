@@ -15,7 +15,6 @@ struct stack *init(void)
     new->data = NULL;
     return new;
 }
-
 /**
 ** \fn struct stack *push(struct stack *head, char *data)
 ** \brief push a string into the stack
@@ -23,31 +22,24 @@ struct stack *init(void)
 */
 struct stack *push(struct stack *head, char *data)
 {
-    struct stack *new = malloc(sizeof(struct stack));
-    if (!new)
-        return NULL;
-    char *string = malloc(my_strlen(data)+1);
-    my_strcpy(string, data);
-    new->data = string;
+    struct stack *new = init();
+    new->data = data;
     new->next = head;
     return new;
 }
-
 /**
 ** \fn struct stack *pop(struct stack *head, char **data)
 ** \brief pops the head of the stack
 ** \return the new stack
 */
-struct stack *pop(struct stack *head, char **data)
+char *pop(struct stack **head)
 {
-    *data = malloc(my_strlen(head->data) + 1);
-    my_strcpy(*data, head->data);
-    struct stack *new = head->next;
-    free(head->data);
-    free(head);
-    return new;
+    char *s = (*head)->data;
+    struct stack *tmp = (*head)->next;
+    free(*head);
+    *head = tmp;
+    return s;
 }
-
 /**
 ** \fn void free_stack(struct stack *stack)
 ** \brief free the stack
@@ -55,9 +47,13 @@ struct stack *pop(struct stack *head, char **data)
 */
 void free_stack(struct stack *stack)
 {
-  char *data;
   while (stack->next)
-    stack = pop(stack, &data);
+  {
+    struct stack *tmp = stack->next;
+    free(stack);
+    stack = tmp;
+  }
+
   free(stack->data);
   free(stack);
 }

@@ -25,3 +25,5 @@
 [x] add parenthesis before -a -print
 [] test with every fsanitize possible
 [] -print -o -print should only pring once
+[] delete all trailing white space
+[] more coherent indent

@@ -13,7 +13,7 @@ struct stack
 
 struct stack *init(void);
 struct stack *push(struct stack *head, char *data);
-struct stack *pop(struct stack *head, char **data);
+char *pop(struct stack **head);
 void free_stack(struct stack *stack);
 
 #endif

@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+void free_var(char **arg, char **func);
 /**
 ** \fn void to_postfix(char **input, char **postfix)
 ** \brief Converts list of string in infix representation to postfix.
@@ -16,7 +16,6 @@
 */
 int to_postfix(char **input, int len, char **postfix)
 {
-    char *s = NULL;
     struct stack *stack = init();
     int j = 0;
     for (int i = 0; i < len; ++i)
@@ -34,10 +33,9 @@ int to_postfix(char **input, int len, char **postfix)
         {
             for (; stack->data && !my_strcmp(stack->data, "("); ++j)
             {
-                stack = pop(stack, &s);
-                postfix[j] = s;
+                postfix[j] = pop(&stack);
             }
-            stack = pop(stack, &s);
+            pop(&stack);
         }
         if (is_operator(input[i]))
         {
@@ -48,18 +46,15 @@ int to_postfix(char **input, int len, char **postfix)
                 for (; stack->data && !my_strcmp(stack->data, "(")
                        && !is_priority(input[i], stack->data); ++j)
                 {
-                       stack = pop(stack, &s);
-                       postfix[j] = s;
+                       postfix[j] = pop(&stack);
                 }
                 stack = push(stack, input[i]);
            }
         }
     }
     for (; stack->data; ++j)
-    {
-        stack = pop(stack, &s);
-        postfix[j] = s;
-    }
+        postfix[j] = pop(&stack);
+
     free_stack(stack);
     return j;
 }
@@ -137,6 +132,8 @@ int eval(char *path, char **postfix, int len)
 {
   struct stack *stack = init();
   char *s = NULL;
+  char *arg = NULL;
+  char *func = NULL;
   for (int i = 0; i < len; ++i)
   {
     if (!is_operator(postfix[i]))
@@ -145,22 +142,19 @@ int eval(char *path, char **postfix, int len)
     {
       int a = 0;
       int b = 0;
-      stack = pop(stack, &s);
-      char *func = s;
+      func = pop(&stack);
       if (my_strcmp(func, "0") || my_strcmp(func, "1"))
       {
         a = func[0] - '0';
-        stack = pop(stack, &s);
-        char *arg = s;
-        stack = pop(stack, &s);
-        func = s;
+        arg = pop(&stack);
+        func = pop(&stack);
         b = call_function(func, arg, path);
       }
       else if (!my_strcmp(postfix[i], "!"))
       {
         if (my_strcmp(func, "-print"))
         {
-          stack = pop(stack, &s);
+          s = pop(&stack);
           if (my_strcmp(s, "0"))
             b = s[0] - '0';
           else if (my_strcmp(s, "1"))
@@ -169,20 +163,18 @@ int eval(char *path, char **postfix, int len)
             b = call_function("-print", "1", path);
           else
           {
-            char *arg = s;
-            stack = pop(stack, &s);
-            func = s;
+            arg = s;
+            func = pop(&stack);
             b = call_function(func, arg, path);
           }
           a = call_function("-print", my_itoa(b), path);
         }
         else
         {
-          char *arg = func;
-          stack = pop(stack, &s);
-          func = s;
+          arg = func;
+          func = pop(&stack);
           a = call_function(func, arg, path);
-          stack = pop(stack, &s);
+          s = pop(&stack);
           if (my_strcmp(s, "0"))
             b = s[0] - '0';
           else if (my_strcmp(s, "1"))
@@ -190,23 +182,22 @@ int eval(char *path, char **postfix, int len)
           else
           {
             arg = s;
-            stack = pop(stack, &s);
-            func = s;
+            func = pop(&stack);
             b = call_function(func, arg, path);
           }
         }
       }
       else
       {
-        stack = pop(stack, &s);
-        char *arg = s;
+        arg = pop(&stack);
         a = call_function(func, arg, path);
       }
       int result = compute(postfix[i], a, b);
       stack = push(stack, my_itoa(result));
     }
   }
-
-  pop(stack, &s);
-  return s[0] - '0';
+  //free(s);
+  //pop(&stack);
+  free_stack(stack);
+  return 0;
 }
