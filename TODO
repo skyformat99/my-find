@@ -9,19 +9,19 @@
 [x] test on PIE if test suite also creates link in link
 [x] find out if arg can be given as -Ld of -L -d
 [] options overide each other
-[] check memory leaks
+[x] check memory leaks
 [x] find out if expressions can be given as only arg of find
 [x] yes they can, implement it now
-[] remember to free the parsed list of expre
+[x] remember to free the parsed list of expre
 [] check if first expr is valid
-[] RECODE MEMCPY AND STRCPY
-[] replace FNM_PATHNAME by FNM_FILE_NAME
+[x] RECODE MEMCPY AND STRCPY
+[x] replace FNM_PATHNAME by FNM_FILE_NAME
 [x] in eval, pop twice, than call func
 [] MORE THEN 25L: to_postfix,EVAL,parse_arg,format expr
-[] free everything when errx
+[x] free everything when errx
 [] remove -g in makefile!
 [x] append -a after -print when not at the end
-[] fnmatch doesn't match glowbing
+[x] fnmatch doesn't match glowbing
 [x] add parenthesis before -a -print
 [] test with every fsanitize possible
 [] -print -o -print should only pring once
