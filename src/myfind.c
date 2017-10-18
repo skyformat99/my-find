@@ -84,7 +84,10 @@ void free_arg(struct argument *arg)
   for (int i = 0; i < arg->expressions->len; ++i)
     if (my_strcmp(arg->expressions->string_array[i], "-exec")
         || my_strcmp(arg->expressions->string_array[i], "-execdir"))
+    {
      free(arg->expressions->string_array[i+1]);
+     break;
+    }
   free(arg->expressions->string_array);
   free(arg->expressions);
   free(arg);

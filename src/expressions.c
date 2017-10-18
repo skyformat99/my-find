@@ -47,14 +47,6 @@ void format_expr(struct argument *arg)
 
   char **new = calloc(size, sizeof(char *));
 
-  if (!print)
-  {
-    new[0] = "(";
-    new[size - 3] = ")";
-    new[size - 2] = "-a";
-    new[size - 1] = "-print";
-    y++;
-  }
 
   for (int i = 0; i < arg->expressions->len; ++i, ++y)
   {
@@ -74,6 +66,7 @@ void format_expr(struct argument *arg)
     if (my_strcmp(expressions[i], "-exec")
      || my_strcmp(expressions[i], "-ecedir"))
      {
+       print = 1;
        i++;
        new[++y] = format_exec(expressions + i);
        for (; expressions[i][0] != ';'; ++i)
@@ -85,6 +78,15 @@ void format_expr(struct argument *arg)
         new[y+1] = "-a";
         y++;
       }
+  }
+
+  if (!print)
+  {
+    new[0] = "(";
+    new[size - 3] = ")";
+    new[size - 2] = "-a";
+    new[size - 1] = "-print";
+    y++;
   }
 
   arg->expressions->string_array = new;
@@ -274,11 +276,16 @@ static char **get_arg(const char *path, char *arg)
 
 static char *get_command(char *arg)
 {
-  char *command = arg;
+  char *start = arg;
   int i = 0;
   for (; arg[i] != ' '; ++i)
     ;
   *(arg + i) = '\0';
+  
+  char *command = calloc(my_strlen(start) + 1, 1);
+  my_strcpy(command, start);
+
+  *(arg + i) = ' ';
   return command;
 }
 
@@ -287,6 +294,8 @@ static int action_exec(char *arg, char *path)
   char *command = get_command(arg);
   char **new_arg = get_arg(path, arg + my_strlen(command) + 1);
   (void)new_arg;
+  free(new_arg[0]);
   free(new_arg);
+  free(command);
   return 1;
 }
