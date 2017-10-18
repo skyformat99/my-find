@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "myfind.h"
+#include "utilities.h"
 #include "parse_arg.h"
 #include "expressions.h"
 #include "evalexpr.h"
@@ -45,9 +46,6 @@ int main(int argc, char *argv[])
   len = to_postfix(arg->expressions->string_array, len, postfix);
 
   r_val = search(arg, postfix, len, option);
-//  for (int i = 0; i < len; ++i)
-//    free(postfix[i]);
-
   free(postfix);
   free_arg(arg);
   return r_val != 0;
@@ -83,6 +81,10 @@ void free_arg(struct argument *arg)
 {
   free(arg->options);
   free(arg->files);
+  for (int i = 0; i < arg->expressions->len; ++i)
+    if (my_strcmp(arg->expressions->string_array[i], "-exec")
+        || my_strcmp(arg->expressions->string_array[i], "-execdir"))
+     free(arg->expressions->string_array[i+1]);
   free(arg->expressions->string_array);
   free(arg->expressions);
   free(arg);

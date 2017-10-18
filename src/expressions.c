@@ -12,7 +12,10 @@
 static int get_lenformat(char **expressions, int len, int *print);
 static int test_name(const char *pattern, char *string);
 static int print(const char* path, int eval);
-
+static char* format_exec(char **exec);
+static int action_exec(char *arg, char *path);
+static char *get_command(char *arg);
+static char **get_arg(const char *path, char *arg);
  /**
  ** \fn void append_and(struct argument *arg);
  ** \brief Take the list of expressions, append -print at the end if not
@@ -68,7 +71,14 @@ void format_expr(struct argument *arg)
         i++;
       }
     }
-
+    if (my_strcmp(expressions[i], "-exec")
+     || my_strcmp(expressions[i], "-ecedir"))
+     {
+       i++;
+       new[++y] = format_exec(expressions + i);
+       for (; expressions[i][0] != ';'; ++i)
+         ;
+     }
     if (my_strcmp(expressions[i], "-print"))
       if (i + 1 < arg->expressions->len && !is_operator(expressions[i+1]))
       {
@@ -79,6 +89,34 @@ void format_expr(struct argument *arg)
 
   arg->expressions->string_array = new;
   arg->expressions->len = size;
+}
+/**
+** \fn static char* format_exec(char **expressions)
+** \brief creates a new string with all the argument to exec
+** concatenated in one string seperate by space
+** \param char **expressions, the start of the argument to exec
+** \return the new string.
+*/
+static char* format_exec(char **expressions)
+{
+  int len = 0;
+  int nb = -1;
+  for (int j = 0; expressions[j][0] != ';'; ++j)
+  {
+    len += my_strlen(expressions[j]);
+    nb++;
+  }
+  /** the new string size equals to size of string
+   ** sperated by space + null byte
+   */
+  char *exec = calloc(len + nb + 1, 1);
+  for (int i = 0; expressions[i][0] != ';'; ++i, --nb)
+  {
+    my_strcat(exec, expressions[i]);
+    if (nb > 0)
+      my_strcat(exec, " ");
+  }
+  return exec;
 }
 /**
 ** \fn static int get_lenformat(char **expressions, int len, int *print)
@@ -129,6 +167,8 @@ int call_function(char *func, char *arg, char *path)
     return test_type(path, arg);
   if (my_strcmp(func, "-print"))
     return print(path, arg[0] - '0');
+  if (my_strcmp(func, "-exec"))
+    return action_exec(arg, path);
   else
     errx(1, "unknown predicate `%s'", func);
 }
@@ -145,8 +185,8 @@ static int test_name(const char *pattern, char *string)
 
   for (int i = 0; string[i] != '\0'; i++)
     if (string[i] == '/')
-        cur = string + i; 
-   
+        cur = string + i;
+
   if (!fnmatch(pattern, cur+1, 0))
     return 1;
   return 0;
@@ -190,5 +230,63 @@ static int print(const char* path, int eval)
 {
   if (eval)
     printf("%s\n", path);
+  return 1;
+}
+
+static char **get_arg(const char *path, char *arg)
+{
+  if (!arg)
+  {
+    char **null = calloc(1, sizeof(char *));
+    return null;
+  }
+
+  int bracket = 0;
+  for (int i = 0; arg[i] != '\0'; ++i)
+    if (arg[i+1] != '\0' && arg[i] == '{' && arg[i+1] == '}')
+      bracket = 1;
+
+  char **new = calloc(2, sizeof(char *));
+
+  if (!bracket)
+  {
+    new[0] = arg;
+    return new;
+  }
+
+  char *new_arg = calloc(my_strlen(arg) + my_strlen(path) - 1, 1);
+
+  int j = 0;
+  for (int i = 0; arg[i] != '\0'; ++i, j++)
+  {
+    if (arg[i] == '{')
+    {
+      for (int y = 0; path[y] != '\0'; ++y, ++j)
+        new_arg[j] = path[y];
+      i += 2;
+    }
+    new_arg[j] = arg[i];
+  }
+  new[0] = new_arg;
+  return new;
+
+}
+
+static char *get_command(char *arg)
+{
+  char *command = arg;
+  int i = 0;
+  for (; arg[i] != ' '; ++i)
+    ;
+  *(arg + i) = '\0';
+  return command;
+}
+
+static int action_exec(char *arg, char *path)
+{
+  char *command = get_command(arg);
+  char **new_arg = get_arg(path, arg + my_strlen(command) + 1);
+  (void)new_arg;
+  free(new_arg);
   return 1;
 }
