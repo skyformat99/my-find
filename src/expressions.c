@@ -57,6 +57,17 @@ void format_expr(struct argument *arg)
   for (int i = 0; i < arg->expressions->len; ++i, ++y)
   {
     new[y] = expressions[i];
+    if (my_strcmp(expressions[i], "-exec")
+     || my_strcmp(expressions[i], "-ecedir"))
+     {
+       i++;
+       new[++y] = format_exec(expressions + i);
+       if (i + 2 < arg->expressions->len && !is_operator(new[y + 1])
+           && !my_strcmp(new[y + 1], ")"))
+           new[++y] = "-a";
+       for (; expressions[i][0] != ';'; ++i)
+         ;
+     }
     if (my_strcmp(expressions[i], "-name")
         || my_strcmp(expressions[i], "-type"))
     {
@@ -69,14 +80,6 @@ void format_expr(struct argument *arg)
         i++;
       }
     }
-    if (my_strcmp(expressions[i], "-exec")
-     || my_strcmp(expressions[i], "-ecedir"))
-     {
-       i++;
-       new[++y] = format_exec(expressions + i);
-       for (; expressions[i][0] != ';'; ++i)
-         ;
-     }
     if (my_strcmp(expressions[i], "-print"))
       if (i + 1 < arg->expressions->len && !is_operator(expressions[i+1]))
       {
@@ -126,20 +129,27 @@ static char* format_exec(char **expressions)
 static int get_lenformat(char **expressions, int len, int *print)
 {
   int size = len;
+  int second = 0;
   for (int i = 0; i < len; ++i)
   {
-    if (my_strcmp(expressions[i], "-name")
-        || my_strcmp(expressions[i], "-type"))
-      if (i + 2 < len && !is_operator(expressions[i+2])
-          && !my_strcmp(expressions[i+2], ")"))
-        size++;
     if (my_strcmp(expressions[i], "-exec")
         || my_strcmp(expressions[i], "-execdir"))
     {
       i++;
+      if (second)
+        size++;
       for (; expressions[i][0] != ';'; ++i)
         size--;
+      second = 1;
     }
+    if (my_strcmp(expressions[i], "-name")
+        || my_strcmp(expressions[i], "-type")
+        || my_strcmp(expressions[i], "-exec")
+        || my_strcmp(expressions[i], "-execdir"))
+      if (i + 2 < len && !is_operator(expressions[i+2])
+          && !my_strcmp(expressions[i+2], ")"))
+        size++;
+
     if (my_strcmp(expressions[i], "-print"))
       if (i + 1 < len && !is_operator(expressions[i+1]))
         size++;
