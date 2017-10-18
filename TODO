@@ -27,4 +27,5 @@
 [] -print -o -print should only pring once
 [] delete all trailing white space
 [] more coherent indent
-[] fix problem with get_arg and make an other file for these functions
+[x] fix problem with get_arg and make an other file for these functions
+[] problem exec and print

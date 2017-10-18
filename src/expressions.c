@@ -7,23 +7,21 @@
 #include "expressions.h"
 #include "utilities.h"
 #include "evalexpr.h"
+#include "execute.h"
 #include "parse_arg.h"
 
 static int get_lenformat(char **expressions, int len, int *print);
 static int test_name(const char *pattern, char *string);
 static int print(const char* path, int eval);
 static char* format_exec(char **exec);
-static int action_exec(char *arg, char *path);
-static char *get_command(char *arg);
-static char **get_arg(const char *path, char *arg);
- /**
- ** \fn void append_and(struct argument *arg);
- ** \brief Take the list of expressions, append -print at the end if not
- ** already passed as arg, put's parenthentesis around expressions .
- ** before -a print. Append -a operator if no specified
- ** \param struct argument *arg, pointer on the main argument structure
- ** \return void.
- */
+/**
+** \fn void append_and(struct argument *arg);
+** \brief Take the list of expressions, append -print at the end if not
+** already passed as arg, put's parenthentesis around expressions .
+** before -a print. Append -a operator if no specified
+** \param struct argument *arg, pointer on the main argument structure
+** \return void.
+*/
 void format_expr(struct argument *arg)
 {
   int print = 0;
@@ -47,7 +45,6 @@ void format_expr(struct argument *arg)
 
   char **new = calloc(size, sizeof(char *));
 
-
   for (int i = 0; i < arg->expressions->len; ++i, ++y)
   {
     new[y] = expressions[i];
@@ -66,7 +63,7 @@ void format_expr(struct argument *arg)
     if (my_strcmp(expressions[i], "-exec")
      || my_strcmp(expressions[i], "-ecedir"))
      {
-       print = 1;
+     size--;
        i++;
        new[++y] = format_exec(expressions + i);
        for (; expressions[i][0] != ';'; ++i)
@@ -232,70 +229,5 @@ static int print(const char* path, int eval)
 {
   if (eval)
     printf("%s\n", path);
-  return 1;
-}
-
-static char **get_arg(const char *path, char *arg)
-{
-  if (!arg)
-  {
-    char **null = calloc(1, sizeof(char *));
-    return null;
-  }
-
-  int bracket = 0;
-  for (int i = 0; arg[i] != '\0'; ++i)
-    if (arg[i+1] != '\0' && arg[i] == '{' && arg[i+1] == '}')
-      bracket = 1;
-
-  char **new = calloc(2, sizeof(char *));
-
-  if (!bracket)
-  {
-    new[0] = arg;
-    return new;
-  }
-
-  char *new_arg = calloc(my_strlen(arg) + my_strlen(path) - 1, 1);
-
-  int j = 0;
-  for (int i = 0; arg[i] != '\0'; ++i, j++)
-  {
-    if (arg[i] == '{')
-    {
-      for (int y = 0; path[y] != '\0'; ++y, ++j)
-        new_arg[j] = path[y];
-      i += 2;
-    }
-    new_arg[j] = arg[i];
-  }
-  new[0] = new_arg;
-  return new;
-
-}
-
-static char *get_command(char *arg)
-{
-  char *start = arg;
-  int i = 0;
-  for (; arg[i] != ' '; ++i)
-    ;
-  *(arg + i) = '\0';
-  
-  char *command = calloc(my_strlen(start) + 1, 1);
-  my_strcpy(command, start);
-
-  *(arg + i) = ' ';
-  return command;
-}
-
-static int action_exec(char *arg, char *path)
-{
-  char *command = get_command(arg);
-  char **new_arg = get_arg(path, arg + my_strlen(command) + 1);
-  (void)new_arg;
-  free(new_arg[0]);
-  free(new_arg);
-  free(command);
   return 1;
 }
