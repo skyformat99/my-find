@@ -45,6 +45,15 @@ void format_expr(struct argument *arg)
 
   char **new = calloc(size, sizeof(char *));
 
+  if (!print)
+  {
+    new[0] = "(";
+    new[size - 3] = ")";
+    new[size - 2] = "-a";
+    new[size - 1] = "-print";
+    y++;
+  }
+
   for (int i = 0; i < arg->expressions->len; ++i, ++y)
   {
     new[y] = expressions[i];
@@ -63,7 +72,6 @@ void format_expr(struct argument *arg)
     if (my_strcmp(expressions[i], "-exec")
      || my_strcmp(expressions[i], "-ecedir"))
      {
-     size--;
        i++;
        new[++y] = format_exec(expressions + i);
        for (; expressions[i][0] != ';'; ++i)
@@ -75,15 +83,6 @@ void format_expr(struct argument *arg)
         new[y+1] = "-a";
         y++;
       }
-  }
-
-  if (!print)
-  {
-    new[0] = "(";
-    new[size - 3] = ")";
-    new[size - 2] = "-a";
-    new[size - 1] = "-print";
-    y++;
   }
 
   arg->expressions->string_array = new;
@@ -108,7 +107,7 @@ static char* format_exec(char **expressions)
   /** the new string size equals to size of string
    ** sperated by space + null byte
    */
-  char *exec = calloc(len + nb + 1, 1);
+  char *exec = calloc(len + nb + 2, 1);
   for (int i = 0; expressions[i][0] != ';'; ++i, --nb)
   {
     my_strcat(exec, expressions[i]);

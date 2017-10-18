@@ -28,4 +28,5 @@
 [] delete all trailing white space
 [] more coherent indent
 [x] fix problem with get_arg and make an other file for these functions
-[] problem exec and print
+[] problem exec return value and print
+[] see error message for exec unknown command;
