@@ -7,6 +7,8 @@
 #include <stdio.h>
 
 static int eval_second_operand(char *path, struct stack **stack, int a);
+static int should_eval(int a, char *operator);
+
 /**
 ** \fn void to_postfix(char **input, char **postfix)
 ** \brief Converts list of string in infix representation to postfix.
@@ -111,6 +113,12 @@ int compute(char *op, int a, int b)
     return -1;
 }
 
+/**
+** \fn char *my_itoa(int a)
+** \brief returns the int a in a string (always 0 or 1)
+** \param int a, the int to convert to string
+** \return the new string
+*/
 char *my_itoa(int a)
 {
   if (a == 0)
@@ -118,6 +126,13 @@ char *my_itoa(int a)
   return "1";
 }
 
+/**
+** \fb static int eval_second_operand(char *path, struct stack **st, int a)
+** \brief evaluate the second operand
+** \param char *path, the path, struct stack **st, a pointer on the stack,
+** the value returned by the last operand
+** \return the value of the second operand
+*/
 static int eval_second_operand(char *path, struct stack **st, int a)
 {
   char *arg = pop(st);
@@ -132,6 +147,18 @@ static int eval_second_operand(char *path, struct stack **st, int a)
   }
 }
 
+static int should_eval(int a, char *operator)
+{
+ return ((a == 0 && !my_strcmp(operator, "-a"))
+          || (a == 1 && (!my_strcmp(operator, "-o"))));
+}
+/**
+** \fn int eval(char **postfix)
+** \brief Computes the result of the operation given in postfix notation
+** \param char **postfix, the list of string representing the operation in
+**  postfix
+** \return 1 if postfix is evaluated to true, 0 otherwise
+*/
 int eval(char *path, char **postfix, int len)
 {
   struct stack *stack = init();
@@ -152,13 +179,15 @@ int eval(char *path, char **postfix, int len)
       else if (my_strcmp(arg, "-print"))
       {
         a = eval_second_operand(path, &stack, 1);
-        b = call_function("-print", my_itoa(a), path);
+        if (should_eval(a, postfix[i]))
+          b = call_function("-print", my_itoa(a), path);
       }
       else
       {
         char *func = pop(&stack);
         a = eval_second_operand(path, &stack, 1);
-        b = call_function(func, arg, path);
+        if (should_eval(a, postfix[i]))
+          b = call_function(func, arg, path);
       }
 
       int result = compute(postfix[i], a, b);
@@ -169,84 +198,3 @@ int eval(char *path, char **postfix, int len)
   free_stack(stack);
   return 0;
 }
-/**
-** \fn int eval(char **postfix)
-** \brief Computes the result of the operation given in postfix notation
-** \param char **postfix, the list of string representing the operation in
-**  postfix
-** \return 1 if postfix is evaluated to true, 0 otherwise
-*/
-/*
-int eval(char *path, char **postfix, int len)
-{
-  struct stack *stack = init();
-  char *s = NULL;
-  char *arg = NULL;
-  char *func = NULL;
-  for (int i = 0; i < len; ++i)
-  {
-    if (!is_operator(postfix[i]))
-        stack = push(stack, postfix[i]);
-    if (is_operator(postfix[i]))
-    {
-      int a = 0;
-      int b = 0;
-      func = pop(&stack);
-      if (my_strcmp(func, "0") || my_strcmp(func, "1"))
-      {
-        a = func[0] - '0';
-        arg = pop(&stack);
-        func = pop(&stack);
-        b = call_function(func, arg, path);
-      }
-      else if (!my_strcmp(postfix[i], "!"))
-      {
-        if (my_strcmp(func, "-print"))
-        {
-          s = pop(&stack);
-          if (my_strcmp(s, "0"))
-            b = s[0] - '0';
-          else if (my_strcmp(s, "1"))
-            b = s[0] - '0';
-          else if (my_strcmp(s, "-print"))
-            b = call_function("-print", "1", path);
-          else
-          {
-            arg = s;
-            func = pop(&stack);
-            b = call_function(func, arg, path);
-          }
-          a = call_function("-print", my_itoa(b), path);
-        }
-        else
-        {
-          arg = func;
-          func = pop(&stack);
-          a = call_function(func, arg, path);
-          s = pop(&stack);
-          if (my_strcmp(s, "0"))
-            b = s[0] - '0';
-          else if (my_strcmp(s, "1"))
-            b = s[0] - '0';
-          else
-          {
-            arg = s;
-            func = pop(&stack);
-            b = call_function(func, arg, path);
-          }
-        }
-      }
-      else
-      {
-        arg = pop(&stack);
-        a = call_function(func, arg, path);
-      }
-      int result = compute(postfix[i], a, b);
-      stack = push(stack, my_itoa(result));
-    }
-  }
-  //free(s);
-  //pop(&stack);
-  free_stack(stack);
-  return 0;
-}*/

@@ -17,7 +17,7 @@
 [x] RECODE MEMCPY AND STRCPY
 [x] replace FNM_PATHNAME by FNM_FILE_NAME
 [x] in eval, pop twice, than call func
-[ ] MORE THEN 25L: to_postfix,EVAL,parse_arg,format expr, isvalidexpr
+[ ] MORE THEN 25L:parse_arg,format expr, isvalidexpr
 [x] free everything when errx
 [ ] remove -g in makefile and fsanitize=address!
 [x] append -a after -print when not at the end
