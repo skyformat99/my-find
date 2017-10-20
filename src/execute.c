@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include "utilities.h"
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 static char *get_command(char *arg);
@@ -71,7 +73,7 @@ static char *get_command(char *arg)
 
 int action_exec(char *arg, char *path)
 {
-  int bracket;
+  int bracket = 0;
   char *command = get_command(arg);
   char **new_arg = get_arg(path, command, arg, &bracket);
   pid_t cpid;

@@ -96,12 +96,12 @@ void is_valid_expr(struct argument *arg)
 {
   char **expressions = arg->expressions->string_array;
 
-  for (int i = 0; i < arg->expressions->len; ++i)
+  for (int i = 0; i < arg->expressions->len && expressions[i]; ++i)
   {
     if (expressions[i][0] == '-')
     {
       if (my_strcmp(expressions[i], "-name")
-          || my_strcmp(expressions[i], "-type")) 
+          || my_strcmp(expressions[i], "-type"))
       {
         if (i + 1 >= arg->expressions->len)
           errx(1, "missing argument to `%s'", expressions[i]);
@@ -117,7 +117,7 @@ void is_valid_expr(struct argument *arg)
           ;
         if (j >= arg->expressions->len)
           errx(1, "missing argument to `%s'", expressions[i]);
-        i = j + 1;
+        i = j; //+ 1; // problm
         continue;
       }
       if (my_strcmp(expressions[i], "-print"))

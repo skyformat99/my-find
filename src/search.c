@@ -114,6 +114,8 @@ int search_in_dir(char *path, char **postfix, int len, char option)
 {
 
   DIR *dir = opendir(path);
+  if (!dir)
+    return 1;
   char *subdir = NULL;
   struct dirent *dp = NULL;
   if (path[my_strlen(path) -1] == '/')

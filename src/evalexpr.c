@@ -5,7 +5,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-void free_var(char **arg, char **func);
+
+static int eval_second_operand(char *path, struct stack **stack, int a);
 /**
 ** \fn void to_postfix(char **input, char **postfix)
 ** \brief Converts list of string in infix representation to postfix.
@@ -32,9 +33,7 @@ int to_postfix(char **input, int len, char **postfix)
         if (my_strcmp(input[i], ")"))
         {
             for (; stack->data && !my_strcmp(stack->data, "("); ++j)
-            {
                 postfix[j] = pop(&stack);
-            }
             pop(&stack);
         }
         if (is_operator(input[i]))
@@ -45,11 +44,9 @@ int to_postfix(char **input, int len, char **postfix)
             {
                 for (; stack->data && !my_strcmp(stack->data, "(")
                        && !is_priority(input[i], stack->data); ++j)
-                {
                        postfix[j] = pop(&stack);
-                }
                 stack = push(stack, input[i]);
-           }
+            }
         }
     }
     for (; stack->data; ++j)
@@ -121,6 +118,57 @@ char *my_itoa(int a)
   return "1";
 }
 
+static int eval_second_operand(char *path, struct stack **st, int a)
+{
+  char *arg = pop(st);
+  if (my_strcmp(arg, "0") || my_strcmp(arg, "1"))
+    return arg[0] - '0';
+  if (my_strcmp(arg, "-print"))
+    return call_function("-print", my_itoa(a), path);
+  else
+  {
+    char *func = pop(st);
+    return call_function(func, arg, path);
+  }
+}
+
+int eval(char *path, char **postfix, int len)
+{
+  struct stack *stack = init();
+  for (int i = 0; i < len; ++i)
+  {
+    if (!is_operator(postfix[i]))
+      stack = push(stack, postfix[i]);
+    else
+    {
+      int a = 0;
+      int b = 0;
+      char *arg = pop(&stack);
+      if (my_strcmp(arg, "0") || my_strcmp(arg, "1"))
+      {
+        b = arg[0] - '0';
+        a = eval_second_operand(path, &stack, 1);
+      }
+      else if (my_strcmp(arg, "-print"))
+      {
+        a = eval_second_operand(path, &stack, 1);
+        b = call_function("-print", my_itoa(a), path);
+      }
+      else
+      {
+        char *func = pop(&stack);
+        a = eval_second_operand(path, &stack, 1);
+        b = call_function(func, arg, path);
+      }
+
+      int result = compute(postfix[i], a, b);
+      stack = push(stack, my_itoa(result));
+    }
+  }
+
+  free_stack(stack);
+  return 0;
+}
 /**
 ** \fn int eval(char **postfix)
 ** \brief Computes the result of the operation given in postfix notation
@@ -128,6 +176,7 @@ char *my_itoa(int a)
 **  postfix
 ** \return 1 if postfix is evaluated to true, 0 otherwise
 */
+/*
 int eval(char *path, char **postfix, int len)
 {
   struct stack *stack = init();
@@ -200,4 +249,4 @@ int eval(char *path, char **postfix, int len)
   //pop(&stack);
   free_stack(stack);
   return 0;
-}
+}*/

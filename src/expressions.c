@@ -54,7 +54,7 @@ void format_expr(struct argument *arg)
     y++;
   }
 
-  for (int i = 0; i < arg->expressions->len; ++i, ++y)
+  for (int i = 0; i < arg->expressions->len && expressions[i]; ++i, ++y)
   {
     new[y] = expressions[i];
     if (my_strcmp(expressions[i], "-exec")

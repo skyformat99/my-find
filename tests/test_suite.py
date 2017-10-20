@@ -1,5 +1,6 @@
 import os
 import subprocess
+import difflib
 
 OK = '\033[92m'
 WARNING = '\033[93m'
@@ -41,8 +42,19 @@ def make_test(arg):
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     is_success = (myresult.stdout == findresult.stdout) and (myresult.stderr[7:] == findresult.stderr[5:])
     if not is_success:
-        print("Fail with '%s'" % arg)
-        return 0
+      d = difflib.Differ()
+      diff = difflib.unified_diff(
+                  myresult.stdout.decode("utf-8"),
+                  findresult.stdout.decode("utf-8"),
+                  lineterm='')
+      print(''.join(list(diff)))
+      diff = difflib.unified_diff(
+                 myresult.stderr[7:].decode("utf-8"),
+                 findresult.stdout.decode("utf-8"),
+                 lineterm='',)
+      print(''.join(list(diff)))
+      print("Fail with '%s'" % arg)
+      return 0
     return is_success
 
 def run_test():
