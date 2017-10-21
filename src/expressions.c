@@ -63,7 +63,7 @@ void format_expr(struct argument *arg)
   int y = 0;
   int len = arg->expressions->len;
   char **expressions = arg->expressions->string_array;
-  
+
   if (len == 0 || (len == 1 && my_strcmp(expressions[0], "-print")))
   {
     empty_expr(&arg);
@@ -132,7 +132,7 @@ void format_expr(struct argument *arg)
       }
     }
   }
-  
+
   if (exec)
     arg->expressions->string_array = new + 1;
   else

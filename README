@@ -1,0 +1,33 @@
+MYFIND is a light implementation of find(1).
+
+Overview :
+
+  Myfind is the second projet realised during the first semester of ING1.
+  Its goal is to mimic as close as possible the behavior of find(1).
+  It was realised in two weeks.
+
+I) Building executable
+  
+  In the root directory type "make" followed by one of the following keywords:
+  * all   : Produces the myfind binary
+  * test  : Produces the binary if not already made and run the tests suite
+  * doc   : Generates documentation
+  * clean : Deletes everything produced by make
+
+II) Usage
+
+  In the root directory:
+  ./myfind [-d] [-H] [-L] [-P] [files] [expression]
+
+  Options     : -d: process directories content before directory itself
+                -H: does not follow symlinks except if given in command line
+                -L: follows symlinks
+                -P: never follow symlinks
+  expressions : Each of these can be separated by operator
+                Tests     : -name, -type
+                Action    : -print, -exec, -execdir
+                Operators : -o, -a, '!', '(', ')'
+
+For more details on the code, read the generated doc.
+For more informations on specific test or action, please
+refer yourself to the man of find.

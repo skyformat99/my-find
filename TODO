@@ -13,7 +13,7 @@
 [x] find out if expressions can be given as only arg of find
 [x] yes they can, implement it now
 [x] remember to free the parsed list of expre
-[ ] check if first expr is valid
+[x] check if first expr is valid
 [x] RECODE MEMCPY AND STRCPY
 [x] replace FNM_PATHNAME by FNM_FILE_NAME
 [x] in eval, pop twice, than call func
@@ -25,20 +25,22 @@
 [x] add parenthesis before -a -print
 [ ] test with every fsanitize possible
 [x] -print -o -print should only pring once
-[ ] delete all trailing white space
+[x] delete all trailing white space
 [ ] more coherent indent
 [x] fix problem with get_arg and make an other file for these functions
-[ ] problem exec return value and print
-[ ] see error message for exec unknown command;
-[ ] just -print should print
+[x] problem exec return value and print
+[x] see error message for exec unknown command;
+[x] just -print should print
 [x] -exec -a -exec should execute in the other order
 [x] see what's wrong with \( -name tests -o -type f \) -a -name TODO
 [ ] see what's wrong with \( -type f -print \) -print
 [x] do not execute if -a no and -o yes
 [ ] fix test suite
-[ ] tcheck that no zombies
+[x] tcheck that no zombies
 [ ] continue to reduce format_expr and check if two new functions working
-[ ] put new function in new file
+[x] put new function in new file
 [ ] check if parenthesis close
-[ ] -a after parenthesis
-[ ] exec alone misses operator
+[x] -a after parenthesis
+[x] exec alone misses operator
+[x] DO A README
+[ ] DOXYGEN

@@ -54,6 +54,7 @@ int search(struct argument *arg, char **postfix, int len, char option)
   }
   return r_val;
 }
+
 /**
 ** \fn is_valid_dir(char *path, char **postfix, int len, char option)
 ** \brief Check if dir given as arg is valid and print its name.
@@ -87,6 +88,7 @@ static int is_valid_dir(char *path, char **postfix, int len, char option)
   closedir(dir);
   return 1;
 }
+
 /**
 ** \fn static int is_symlink(char *path)
 ** \brief Indicates if dir at path is symbolic link
@@ -103,6 +105,7 @@ static int is_symlink(char *path)
 
   return 0;
 }
+
 /**
 ** \fn int search_in_dir(char *path)
 ** \brief Recursively print the content of dir and the content of the

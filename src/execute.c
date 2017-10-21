@@ -1,5 +1,6 @@
 #include <err.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "utilities.h"
 #include "expressions.h"
 #include <sys/types.h>
@@ -12,7 +13,7 @@ static char **get_arg(const char *path, char *command, char *arg, int *bracket);
 /**
 ** \fn static char **get_arg(const char *path, char *command, char *arg, int *bracket)
 ** \brief get the argument to pass to exec and replace brackets by path
-** \param const char *path, the current path, char *command, the command name, 
+** \param const char *path, the current path, char *command, the command name,
 ** char *arg, the argument passed to exec, int *bracket, boolean to indicate if
 ** bracket were replaced in order to free them later
 ** \return the mofified argument
@@ -62,7 +63,7 @@ static char **get_arg(const char *path, char *command, char *arg, int *bracket)
 
 /**
 ** \fn static char *get_command(char *arg)
-** \brief get the name of the comman exec is suppose to call 
+** \brief get the name of the comman exec is suppose to call
 ** \param char *arg, the argument given to exec
 ** \return the name of the command to call
 */
@@ -91,7 +92,7 @@ static int launch_program(char *command, char *path, char **new_arg)
 {
   pid_t cpid;
   int status;
-
+  setbuf(stdout, NULL);
   cpid = fork();
 
   if (cpid == 0)
@@ -108,13 +109,13 @@ static int launch_program(char *command, char *path, char **new_arg)
     while(tpid != cpid)
       tpid = wait(&status);
   }
-  
+
   return !status;
 }
 
 /**
 ** \fn int action_exec(char *arg, char *path)
-** \brief execute the command given to find via exec 
+** \brief execute the command given to find via exec
 ** \param char *arg, the argument given to exec, char *path the current path
 ** \return true if the command returned 0, false otherwise
 */
@@ -188,7 +189,7 @@ int action_execdir(char *arg, char *path)
     new_arg = get_arg(path + len - 1,
                       command, arg, &bracket);
   }
-  
+
   int rd = launch_program(command, current_dir, new_arg);
 
   if (bracket)
