@@ -99,5 +99,5 @@ int action_exec(char *arg, char *path)
     free(new_arg[1]);
   free(new_arg);
   free(command);
-  return 0;
+  return !status;
 }

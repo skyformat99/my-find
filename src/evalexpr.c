@@ -147,11 +147,19 @@ static int eval_second_operand(char *path, struct stack **st, int a)
   }
 }
 
+/**
+** \fn static int should_eval(int a, char *operator)
+** \brief function to determine if the next operand should be evaluated
+** \param int a, the previous operand, char *operator the operator
+** \return true if the last operatand is 0 and operator is OR and true if
+** last operand is 1 and operator is AND
+*/
 static int should_eval(int a, char *operator)
 {
  return ((a == 0 && !my_strcmp(operator, "-a"))
           || (a == 1 && (!my_strcmp(operator, "-o"))));
 }
+
 /**
 ** \fn int eval(char **postfix)
 ** \brief Computes the result of the operation given in postfix notation

@@ -1,4 +1,4 @@
-CFLAGS = -g -Werror -Wall -Wextra -pedantic -std=c99 -D_DEFAULT_SOURCE -Isrc/include
+CFLAGS = -fsanitize=address -g -Werror -Wall -Wextra -pedantic -std=c99 -D_DEFAULT_SOURCE -Isrc/include
 CC = gcc
 
 SRC = $(wildcard *.c) $(wildcard */*.c)

@@ -79,6 +79,7 @@ struct argument *init_arg(void)
 */
 void free_arg(struct argument *arg)
 {
+  int exec = 0;
   free(arg->options);
   free(arg->files);
   for (int i = 0; i < arg->expressions->len; ++i)
@@ -86,11 +87,15 @@ void free_arg(struct argument *arg)
     if (my_strcmp(arg->expressions->string_array[i], "-exec")
         || my_strcmp(arg->expressions->string_array[i], "-execdir"))
     {
+      exec = 1;
      free(arg->expressions->string_array[i+1]);
      i += 2;
     }
   }
-  free(arg->expressions->string_array);
+  if (exec)
+    free(arg->expressions->string_array - 1);
+  else
+    free(arg->expressions->string_array);
   free(arg->expressions);
   free(arg);
 }

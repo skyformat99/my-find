@@ -14,6 +14,40 @@ static int get_lenformat(char **expressions, int len, int *print);
 static int test_name(const char *pattern, char *string);
 static int print(const char* path, int eval);
 static char* format_exec(char **exec);
+static void empty_expr(struct argument **arg);
+
+/**
+** \fn static void empty_expr(struct argument **arg);
+** \brief if no expressions are specified, adds -name * -a -print
+** \param a pointer of pointer on the argument structure
+** \return void.
+*/
+static void empty_expr(struct argument **arg)
+{
+  char *empty[] = {
+    "-name", "*", "-a", "-print"
+  };
+  char **new = calloc(4, sizeof(char *));
+  for (int i = 0; i < 4; ++i)
+    new[i] = empty[i];
+  (*arg)->expressions->len = 4;
+  (*arg)->expressions->string_array = new;
+}
+
+/**
+** \fn static void not_print(int size, char **new);
+** \brief adds parenthesis and print if print not present in initial expr
+** \param int size the size of the new expression, char **new an array of string
+** \return void.
+*/
+static void not_print(int size, char **new)
+{
+    new[0] = "(";
+    new[size - 3] = ")";
+    new[size - 2] = "-a";
+    new[size - 1] = "-print";
+}
+
 /**
 ** \fn void append_and(struct argument *arg);
 ** \brief Take the list of expressions, append -print at the end if not
@@ -25,41 +59,35 @@ static char* format_exec(char **exec);
 void format_expr(struct argument *arg)
 {
   int print = 0;
+  int exec = 0;
   int y = 0;
-
-  char *empty[] = {
-    "-name", "*", "-a", "-print"
-  };
-  if (arg->expressions->len == 0)
+  int len = arg->expressions->len;
+  char **expressions = arg->expressions->string_array;
+  
+  if (len == 0 || (len == 1 && my_strcmp(expressions[0], "-print")))
   {
-    char **new = calloc(4, sizeof(char *));
-    for (int i = 0; i < 4; ++i)
-      new[i] = empty[i];
-    arg->expressions->len = 4;
-    arg->expressions->string_array = new;
+    empty_expr(&arg);
     return;
   }
 
-  char **expressions = arg->expressions->string_array;
   int size = get_lenformat(expressions, arg->expressions->len, &print);
 
   char **new = calloc(size, sizeof(char *));
 
   if (!print)
   {
-    new[0] = "(";
-    new[size - 3] = ")";
-    new[size - 2] = "-a";
-    new[size - 1] = "-print";
+    not_print(size, new);
     y++;
   }
-
   for (int i = 0; i < arg->expressions->len && expressions[i]; ++i, ++y)
   {
     new[y] = expressions[i];
     if (my_strcmp(expressions[i], "-exec")
      || my_strcmp(expressions[i], "-ecedir"))
      {
+       exec = 1;
+       if (i == 0)
+         size -= 4;
        i++;
        new[++y] = format_exec(expressions + i);
        if (i + 2 < arg->expressions->len && !is_operator(new[y + 1])
@@ -87,10 +115,14 @@ void format_expr(struct argument *arg)
         y++;
       }
   }
-
-  arg->expressions->string_array = new;
+  
+  if (exec)
+    arg->expressions->string_array = new + 1;
+  else
+    arg->expressions->string_array = new;
   arg->expressions->len = size;
 }
+
 /**
 ** \fn static char* format_exec(char **expressions)
 ** \brief creates a new string with all the argument to exec
@@ -119,6 +151,7 @@ static char* format_exec(char **expressions)
   }
   return exec;
 }
+
 /**
 ** \fn static int get_lenformat(char **expressions, int len, int *print)
 ** \brief Take the list of expressions, computes the length needed
@@ -160,6 +193,7 @@ static int get_lenformat(char **expressions, int len, int *print)
   size += *print ? 0 : 4;
   return size;
 }
+
 /**
 ** \fn int call_function(char *func, char *arg, char *path)
 ** \brief Call the function given as a string with argument and path.
@@ -180,6 +214,7 @@ int call_function(char *func, char *arg, char *path)
   else
     errx(1, "unknown predicate `%s'", func);
 }
+
 /**
 ** \fn static int test_name(const char *pattern, const char *string)
 ** \brief test if pattern matches string.
@@ -199,6 +234,7 @@ static int test_name(const char *pattern, char *string)
     return 1;
   return 0;
 }
+
 /**
 ** \fn static int test_type(const char *file, const char *type)
 ** \brief test if file is of type type.
@@ -228,6 +264,7 @@ int test_type(const char *file, const char *type)
   else
     errx(1, "Unknown argument to -type: %s", type);
 }
+
 /**
 ** \fn static int print(const char* path, int eval)
 ** \brief print path if eval is true
