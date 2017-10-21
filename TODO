@@ -8,7 +8,7 @@
 [x] Valgrind to see if problem with lstat
 [x] test on PIE if test suite also creates link in link
 [x] find out if arg can be given as -Ld of -L -d
-[ ] options overide each other
+[x] options overide each other
 [x] check memory leaks
 [x] find out if expressions can be given as only arg of find
 [x] yes they can, implement it now
@@ -40,3 +40,5 @@
 [ ] continue to reduce format_expr and check if two new functions working
 [ ] put new function in new file
 [ ] check if parenthesis close
+[ ] -a after parenthesis
+[ ] exec alone misses operator
