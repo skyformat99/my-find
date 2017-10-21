@@ -30,6 +30,7 @@ void parse_arg(int argc, char *argv[], struct argument *arg)
         if (!expressions)
           expressions = argv;
         exprelen++;
+        continue;
     }
 
     else if (**argv == '-')
