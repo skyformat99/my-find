@@ -1,3 +1,8 @@
+/**
+** \file utilities.c
+** \brief All the miscalleneous needed functions from string.h.
+*/
+
 #include "utilities.h"
 
 /**
@@ -44,6 +49,11 @@ char *my_strcat(char *s1, const char *s2)
   return s1;
 }
 
+/**
+** \fn char *my_strcpy(char *dst, const char *src)
+** \brief Copies string pointed to by src to dst.
+** \return the copied string.
+*/
 char *my_strcpy(char *dst, const char *src)
 {
   char *s = dst;

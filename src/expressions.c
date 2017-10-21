@@ -1,3 +1,8 @@
+/**
+** \file expressions.c
+** \brief Functions related to the parsing and formating of the expressions.
+*/
+
 #include <err.h>
 #include <stddef.h>
 #include <fnmatch.h>
@@ -9,6 +14,7 @@
 #include "evalexpr.h"
 #include "execute.h"
 #include "parse_arg.h"
+#include "advanced_action.h"
 
 static int get_lenformat(char **expressions, int len, int *print);
 static int test_name(const char *pattern, char *string);
@@ -237,7 +243,9 @@ int call_function(char *func, char *arg, char *path)
     return action_exec(arg, path);
   if (my_strcmp(func, "-execdir"))
     return action_execdir(arg, path);
-  else
+  if (my_strcmp(func, "-delete"))
+    return action_delete(arg, path);
+else
     errx(1, "unknown predicate `%s'", func);
 }
 

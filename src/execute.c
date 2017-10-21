@@ -1,3 +1,8 @@
+/**
+** \file execute.c
+** \brief All the functions linked to exec and execdir.
+*/
+
 #include <err.h>
 #include <stdlib.h>
 #include <stdio.h>

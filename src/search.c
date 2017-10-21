@@ -1,3 +1,8 @@
+/**
+** \file search.c
+** \brief All the functions related to the file exploration.
+*/
+
 #include <dirent.h>
 #include <err.h>
 #include <fcntl.h>

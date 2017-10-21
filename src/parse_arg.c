@@ -1,3 +1,8 @@
+/**
+** \file parse_arg.c
+** \brief All the functions related to the argument parsing.
+*/
+
 #include <err.h>
 #include <stdlib.h>
 #include "parse_arg.h"

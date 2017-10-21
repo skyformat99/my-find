@@ -11,7 +11,10 @@ myfind:
 test:	myfind
 	python3 tests/test_suite.py
 
+doc:
+	@doxygen Doxyfile &> /dev/null
+	@echo Doc generated in doc folder ..
+
 clean:
 	rm myfind
-	rm -r tests/architecture
-	rm -r tests/link
+	rm -r doc tests/architecture tests/link

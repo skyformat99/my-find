@@ -1,3 +1,8 @@
+/**
+** \file evalexpr.c
+** \brief All the functions related to the evaluation of expressions.
+*/
+
 #include "stack.h"
 #include "evalexpr.h"
 #include "utilities.h"
@@ -139,6 +144,8 @@ static int eval_second_operand(char *path, struct stack **st, int a)
     return arg[0] - '0';
   if (my_strcmp(arg, "-print"))
     return call_function("-print", my_itoa(a), path);
+  if (my_strcmp(arg, "-delete"))
+    return call_function("-delete", my_itoa(a), path);
   else
   {
     char *func = pop(st);
@@ -188,11 +195,16 @@ int eval(char *path, char **postfix, int len)
         b = arg[0] - '0';
         a = eval_second_operand(path, &stack, 1);
       }
-      else if (my_strcmp(arg, "-print"))
+      else if (my_strcmp(arg, "-print") || my_strcmp(arg, "-delete"))
       {
         a = eval_second_operand(path, &stack, 1);
         if (should_eval(a, postfix[i]))
-          b = call_function("-print", my_itoa(a), path);
+        {
+          if (my_strcmp(arg, "-print"))
+            b = call_function("-print", my_itoa(a), path);
+          else
+            b = call_function("-delete", my_itoa(a), path);
+        }
       }
       else
       {

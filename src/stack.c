@@ -1,6 +1,12 @@
+/**
+** \file stack.c
+** \brief Functions related to the stack structure.
+*/
+
 #include "stack.h"
 #include "utilities.h"
 #include <stdlib.h>
+
 /**
 ** \fn struct stack *init(void)
 ** \brief init a new stack
