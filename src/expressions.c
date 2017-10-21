@@ -129,7 +129,6 @@ void format_expr(struct argument *arg)
         y++;
       }
     }
-     
   }
   
   if (exec)
@@ -251,8 +250,10 @@ static int test_name(const char *pattern, char *string)
   for (int i = 0; string[i] != '\0'; i++)
     if (string[i] == '/')
         cur = string + i;
+  if (!my_strcmp(cur, string))
+    cur++;
 
-  if (!fnmatch(pattern, cur+1, 0))
+  if (!fnmatch(pattern, cur, 0))
     return 1;
   return 0;
 }

@@ -23,8 +23,9 @@ void parse_arg(int argc, char *argv[], struct argument *arg)
 
   for (int i = 0; i < argc - 1; ++i, ++argv)
   {
-    if ((**argv == '-' || **argv == '(') && *(*argv + 1) != 'd'
-        && *(*argv + 1) != 'H' && *(*argv + 1) != 'L' && *(*argv + 1) != 'P')
+    if ((**argv == '-' || **argv == '(' || **argv == '!')
+      && *(*argv + 1) != 'd' && *(*argv + 1) != 'H'
+      && *(*argv + 1) != 'L' && *(*argv + 1) != 'P')
     {
         if (!expressions)
           expressions = argv;
@@ -56,6 +57,7 @@ void parse_arg(int argc, char *argv[], struct argument *arg)
   arg->expressions->string_array = expressions;
   arg->expressions->len = exprelen;
 }
+
 /**
 ** \fn char get_options(struct argument *arg)
 ** \brief get the different options and sets the flags.

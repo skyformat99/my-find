@@ -8,7 +8,6 @@
 
 static int eval_second_operand(char *path, struct stack **stack, int a);
 static int should_eval(int a, char *operator);
-
 /**
 ** \fn void to_postfix(char **input, char **postfix)
 ** \brief Converts list of string in infix representation to postfix.
@@ -172,12 +171,17 @@ int eval(char *path, char **postfix, int len)
   struct stack *stack = init();
   for (int i = 0; i < len; ++i)
   {
+    int a = 0;
+    int b = 0;
     if (!is_operator(postfix[i]))
+    {
       stack = push(stack, postfix[i]);
+      continue;
+    }
+    else if (my_strcmp(postfix[i], "!"))
+      a = eval_second_operand(path, &stack, 0);
     else
     {
-      int a = 0;
-      int b = 0;
       char *arg = pop(&stack);
       if (my_strcmp(arg, "0") || my_strcmp(arg, "1"))
       {
@@ -198,9 +202,9 @@ int eval(char *path, char **postfix, int len)
           b = call_function(func, arg, path);
       }
 
+    }
       int result = compute(postfix[i], a, b);
       stack = push(stack, my_itoa(result));
-    }
   }
 
   free_stack(stack);
