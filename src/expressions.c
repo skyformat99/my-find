@@ -90,6 +90,12 @@ void format_expr(struct argument *arg)
       exec = 1;
       i++;
        new[++y] = format_exec(expressions + i);
+       if (size == 2)
+       {
+         new[++y] = "-a";
+         new[++y] = "1";
+         size += 2;
+       }
        if (i + 2 < len && !is_operator(new[y + 1])
            && !my_strcmp(new[y + 1], ")"))
            new[++y] = "-a";
@@ -107,7 +113,7 @@ void format_expr(struct argument *arg)
         y += 2;
         i++;
       }
-    }
+  }
     if (my_strcmp(expressions[i], "-print"))
       if (i + 1 < len && !is_operator(expressions[i+1]))
       {
