@@ -82,8 +82,9 @@ void format_expr(struct argument *arg)
   for (int i = 0; i < len && expressions[i]; ++i, ++y)
   {
     new[y] = expressions[i];
+
     if (my_strcmp(expressions[i], "-exec")
-     || my_strcmp(expressions[i], "-ecedir"))
+        || my_strcmp(expressions[i], "-execdir"))
      {
        if (!exec && !print)
          size -= 4;
@@ -102,8 +103,9 @@ void format_expr(struct argument *arg)
        for (; expressions[i][0] != ';'; ++i)
          ;
      }
-    if (my_strcmp(expressions[i], "-name")
-        || my_strcmp(expressions[i], "-type"))
+
+     if (my_strcmp(expressions[i], "-name")
+         || my_strcmp(expressions[i], "-type"))
   {
     if (i + 2 < len && !is_operator(expressions[i+2])
           && !my_strcmp(expressions[i+2], ")"))
@@ -154,9 +156,10 @@ static char* format_exec(char **expressions)
     len += my_strlen(expressions[j]);
     nb++;
   }
-  /** the new string size equals to size of string
-   ** sperated by space + null byte
-   */
+
+/** the new string size equals to size of string
+** sperated by space + null byte
+*/
   char *exec = calloc(len + nb + 2, 1);
   for (int i = 0; expressions[i][0] != ';'; ++i, --nb)
   {
@@ -232,6 +235,8 @@ int call_function(char *func, char *arg, char *path)
     return print(path, arg[0] - '0');
   if (my_strcmp(func, "-exec"))
     return action_exec(arg, path);
+  if (my_strcmp(func, "-execdir"))
+    return action_execdir(arg, path);
   else
     errx(1, "unknown predicate `%s'", func);
 }
