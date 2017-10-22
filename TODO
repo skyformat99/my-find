@@ -19,11 +19,11 @@
 [x] in eval, pop twice, than call func
 [ ] MORE THEN 25L:parse_arg,format expr, isvalidexpr
 [x] free everything when errx
-[ ] remove -g in makefile and fsanitize=address!
+[x] remove -g in makefile and fsanitize=address!
 [x] append -a after -print when not at the end
 [x] fnmatch doesn't match glowbing
 [x] add parenthesis before -a -print
-[ ] test with every fsanitize possible
+[x] test with every fsanitize possible
 [x] -print -o -print should only pring once
 [x] delete all trailing white space
 [ ] more coherent indent
@@ -35,7 +35,7 @@
 [x] see what's wrong with \( -name tests -o -type f \) -a -name TODO
 [ ] see what's wrong with \( -type f -print \) -print
 [x] do not execute if -a no and -o yes
-[ ] fix test suite
+[x] fix test suite
 [x] tcheck that no zombies
 [ ] continue to reduce format_expr and check if two new functions working
 [x] put new function in new file
@@ -43,4 +43,4 @@
 [x] -a after parenthesis
 [x] exec alone misses operator
 [x] DO A README
-[ ] DOXYGEN
+[x] DOXYGEN

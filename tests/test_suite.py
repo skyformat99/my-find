@@ -1,6 +1,5 @@
 import os
 import subprocess
-import difflib
 
 OK = '\033[92m'
 WARNING = '\033[93m'
@@ -35,34 +34,26 @@ def call_program(tests):
     print("Succes %d/%d" % (success, len(tests)), end = '')
 
 def make_test(arg):
-
-    myresult = subprocess.run(["../../myfind", arg],
+    
+    args = arg.split(' ')
+    myresult = subprocess.run(["../../myfind"] + args,
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    findresult = subprocess.run(["find", arg],
+    findresult = subprocess.run(["find"]  + args,
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    is_success = (myresult.stdout == findresult.stdout) and (myresult.stderr[7:] == findresult.stderr[5:])
+    is_success = (myresult.stdout == findresult.stdout) \
+                  and (myresult.stderr[7:] == findresult.stderr[5:]) \
+                  and (myresult.returncode == findresult.returncode)
     if not is_success:
-      d = difflib.Differ()
-      diff = difflib.unified_diff(
-                  myresult.stdout.decode("utf-8"),
-                  findresult.stdout.decode("utf-8"),
-                  lineterm='')
-      print(''.join(list(diff)))
-      diff = difflib.unified_diff(
-                 myresult.stderr[7:].decode("utf-8"),
-                 findresult.stdout.decode("utf-8"),
-                 lineterm='',)
-      print(''.join(list(diff)))
-      print("Fail with '%s'" % arg)
+      #print("Fail with '%s'" % arg)
       return 0
     return is_success
 
 def run_test():
 
-    thr_zero = [".", "", "./", "../", "lundi", "samedi", "lundi samedi"]
+    thr_zero = [".", "./", "../", "lundi", "samedi", "lundi samedi", "c.py", "b.txt"]
     call_program(thr_zero)
     print(BOLD + " -  THRESHOLD 0" + END)
-    thr_one = ["-d", "-H", "-L", "-P", "-d ../", "-L samedi", "-H symlink", "symlink"]
+    thr_one = ["-H", "-L", "-P", "-L samedi", "-H symlink", "symlink", "-P samedi"]
     call_program(thr_one)
     print(BOLD + " -  THRESHOLD 1" + END)
     thr_two = ["samedi -name '*.mp3'", "-type d", "-type f", "-name '*.mp3'", "-type l"]
@@ -72,6 +63,18 @@ def run_test():
                  "-name samedi -o -type f", "-print -a -print", "-print -o -print"]
     call_program(thr_three)
     print(BOLD + " -  THRESHOLD 3" + END)
+    thr_four = ["-exec pwd ;", "-exec echo -- {} -- ;", "-exec pwd ; -exec echo -- {} -- ;",
+                "-exec echo ok ;", "-execdir pwd ; -execdir echo {} ;",
+                "-exec ls ;"]
+    call_program(thr_four)
+    print(BOLD + " -  THRESHOLD 4" + END)
+    thr_five = ["! -name '*.mp3'", "! -type f", "( -name '*.mp3' -o -name '*.txt' ) -print",
+                "lundi ( -name '*.mp3' -o -name '*.txt ) -print", "( -name '*.txt' -o -name '*.mp3' ) -type f"]
+    call_program(thr_five)
+    print(BOLD + " - THRESHOLD 5" + END)
+    thr_six = ["-delete", "-perm 660", "-user tinms"]
+    call_program(thr_six)
+    print(BOLD + " - THRESHOLD 6" + END)
 
 os.chdir("tests")
 generate_architecture()

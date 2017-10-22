@@ -76,7 +76,7 @@ static int is_valid_dir(char *path, char **postfix, int len, char option)
     if (test_type(path, "f"))
     {
       eval(path, postfix, len);
-      return 0;
+      return 1;
     }
     warnx("‘%s’: No such file or directory", path);
     return 0;

@@ -1,4 +1,4 @@
-CFLAGS = -fsanitize=address -Werror -Wall -Wextra -pedantic -std=c99 -D_DEFAULT_SOURCE -Isrc/include
+CFLAGS = -Werror -Wall -Wextra -pedantic -std=c99 -D_DEFAULT_SOURCE -Isrc/include
 CC = gcc
 
 SRC = $(wildcard *.c) $(wildcard */*.c)
@@ -15,6 +15,7 @@ doc:
 	@doxygen Doxyfile &> /dev/null
 	@echo Doc generated in doc folder ..
 
+.PHONY: clean
 clean:
 	rm myfind
 	rm -r doc tests/architecture tests/link

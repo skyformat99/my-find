@@ -12,6 +12,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+static int launch_program(char *command, char *path, char **new_arg, int is_cd);
 static char *get_command(char *arg);
 static char **get_arg(const char *path, char *command, char *arg, int *bracket);
 
@@ -93,7 +94,7 @@ static char *get_command(char *arg)
   return command;
 }
 
-static int launch_program(char *command, char *path, char **new_arg)
+static int launch_program(char *command, char *path, char **new_arg, int is_cd)
 {
   pid_t cpid;
   int status;
@@ -102,7 +103,8 @@ static int launch_program(char *command, char *path, char **new_arg)
 
   if (cpid == 0)
   {
-    chdir(path);
+    if (is_cd)
+      chdir(path);
     execvp(command, new_arg);
     warnx("‘%s’: No such file or directory", command);
     exit(0);
@@ -130,7 +132,7 @@ int action_exec(char *arg, char *path)
   char *command = get_command(arg);
   char **new_arg = get_arg(path, command, arg, &bracket);
 
-  int rv = launch_program(command, path, new_arg);
+  int rv = launch_program(command, path, new_arg, 0);
 
   if (bracket)
     free(new_arg[1]);
@@ -195,7 +197,7 @@ int action_execdir(char *arg, char *path)
                       command, arg, &bracket);
   }
 
-  int rd = launch_program(command, current_dir, new_arg);
+  int rd = launch_program(command, current_dir, new_arg, 1);
 
   if (bracket)
     free(new_arg[1]);
