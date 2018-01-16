@@ -17,5 +17,5 @@ doc:
 
 .PHONY: clean
 clean:
-	rm myfind
-	rm -r doc tests/architecture tests/link
+	rm -f myfind
+	rm -rf doc tests/architecture tests/link
